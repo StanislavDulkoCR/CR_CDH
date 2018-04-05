@@ -1,0 +1,6 @@
+/*OFFLINE_ACCOUNT start*/
+FROM prod.account acc
+inner JOIN prod.print_account_detail pad
+ON  pad.hash_account_id = acc.hash_account_id 
+    AND acc.source_name = 'CDS' 
+/*OFFLINE_ACCOUNT end*/

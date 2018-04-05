@@ -1,0 +1,2703 @@
+<QuerySet>
+  <Query IsView="False" IsSP="False">
+    <SQL>;
+SELECT TOP 100 *
+FROM cr_temp.mt_online_ord
+WHERE 1=1
+</SQL>
+    <Name>Tab 6</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL> select top 100 1 as icd_fl, null as cdh_fl
+ ,regexp_substr(external_key,'([a-zA-Z]+)') as account_subtype_code
+ , regexp_substr(external_key,'([0-9]+)') as source_acct_id
+ , *
+ /*S*/
+ 
+ /*E*/
+ from cr_temp.external_ref
+ 
+ ;
+"agg_books_order (table structure changes)
+
+AGG Table Changes:
+- Add column Hash_Account_Id​
+- Add column Source_Name
+- Add column Account_Subtype_Code
+- Keep column Acct_Id as is for the first 5 tables listed - the source for this column should be Account.Source_Account_Id
+- Columns should be positioned in the following order:
+Source_Name, Account_Subtype_Code, Acct_Id​ (relative to the existing position of Acct_Id)"
+
+;
+
+;
+SELECT TOP 100 *
+FROM prod.agg_books_order
+WHERE 1=1
+and source_name != account_subtype_code
+;
+;
+SELECT TOP 100 *
+FROM prod.action_header
+WHERE 1=1 and individual_id = 1200558508
+</SQL>
+    <Name>Tab 2</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <File>file:///C:/Users/Stanislav_Dulko/Documents/MT_BOOKS_ORD_V2.sql</File>
+    <Name>MT_BOOKS_ORD_V2</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>;
+create table cr_temp.GTT_MT_BOOKS_ORD as
+select 1 as icd_fl, null as cdh_fl,ICD_ID, cdh_id
+/*--START--*/
+
+, NVL2(ord_num, ord_num::text,'(NULL)') as ord_num
+, NVL2(dnr_recip_cd, dnr_recip_cd::text,'(NULL)') as dnr_recip_cd
+, NVL2(ord_prem_flg, ord_prem_flg::text,'(NULL)') as ord_prem_flg
+, NVL2(ord_cdr_flg, ord_cdr_flg::text,'(NULL)') as ord_cdr_flg
+, NVL2(entr_typ_cd, entr_typ_cd::text,'(NULL)') as entr_typ_cd
+, NVL2(TO_CHAR(trn_dt,'DD-MON-YY'), TO_CHAR(trn_dt,'DD-MON-YY')::text,'(NULL)') as trn_dt
+, NVL2(TO_CHAR(ord_dt,'DD-MON-YY'), TO_CHAR(ord_dt,'DD-MON-YY')::text,'(NULL)') as ord_dt
+, NVL2(ord_stat_cd, ord_stat_cd::text,'(NULL)') as ord_stat_cd
+, NVL2(keycode, keycode::text,'(NULL)') as keycode
+, NVL2(src_cd, src_cd::text,'(NULL)') as src_cd
+, NVL2(trunc(nvl(ord_prod_amt,'0')), trunc(nvl(ord_prod_amt,'0'))::text,'(NULL)') as ord_prod_amt
+, NVL2(trunc(nvl(ord_ship_amt,'0')), trunc(nvl(ord_ship_amt,'0'))::text,'(NULL)') as ord_ship_amt
+, NVL2(trunc(nvl(ord_tax_amt,'0')), trunc(nvl(ord_tax_amt,'0'))::text,'(NULL)') as ord_tax_amt
+, NVL2(trunc(nvl(ord_misc_amt,'0')), trunc(nvl(ord_misc_amt,'0'))::text,'(NULL)') as ord_misc_amt
+, NVL2(trunc(nvl(ord_gft_cert_amt,'0')), trunc(nvl(ord_gft_cert_amt,'0'))::text,'(NULL)') as ord_gft_cert_amt
+, NVL2(trunc(nvl(ord_coupn_amt,'0')), trunc(nvl(ord_coupn_amt,'0'))::text,'(NULL)') as ord_coupn_amt
+, NVL2(trunc(nvl(ord_disc_amt,'0')), trunc(nvl(ord_disc_amt,'0'))::text,'(NULL)') as ord_disc_amt
+, NVL2(trunc(nvl(ord_value_amt,'0')), trunc(nvl(ord_value_amt,'0'))::text,'(NULL)') as ord_value_amt
+, NVL2(istlmt_cd, istlmt_cd::text,'(NULL)') as istlmt_cd
+, NVL2(gift_ord_cd, gift_ord_cd::text,'(NULL)') as gift_ord_cd
+, NVL2(currncy_typ_cd, currncy_typ_cd::text,'(NULL)') as currncy_typ_cd
+, NVL2(crd_stat_cd, crd_stat_cd::text,'(NULL)') as crd_stat_cd
+, NVL2(trunc(nvl(pmt_amt,'0')), trunc(nvl(pmt_amt,'0'))::text,'(NULL)') as pmt_amt
+, NVL2(TO_CHAR(lst_pmt_dt,'DD-MON-YY'), TO_CHAR(lst_pmt_dt,'DD-MON-YY')::text,'(NULL)') as lst_pmt_dt
+, NVL2(TO_CHAR(lst_pmt_ret_dt,'DD-MON-YY'), TO_CHAR(lst_pmt_ret_dt,'DD-MON-YY')::text,'(NULL)') as lst_pmt_ret_dt
+, NVL2(trunc(nvl(wr_off_amt,'0')), trunc(nvl(wr_off_amt,'0'))::text,'(NULL)') as wr_off_amt
+, NVL2(TO_CHAR(lst_wr_off_dt,'DD-MON-YY'), TO_CHAR(lst_wr_off_dt,'DD-MON-YY')::text,'(NULL)') as lst_wr_off_dt
+, NVL2(trunc(nvl(coll_amt,'0')), trunc(nvl(coll_amt,'0'))::text,'(NULL)') as coll_amt
+, NVL2(TO_CHAR(lst_coll_dt,'DD-MON-YY'), TO_CHAR(lst_coll_dt,'DD-MON-YY')::text,'(NULL)') as lst_coll_dt
+
+/*---END---*/
+
+from cr_temp.MT_BOOKS_ORD T_MAIN  inner join crprod_cdh.cr_temp.cdh_id_xref_noconsbaparts on INDIVIDUAL_ID = ICD_ID ;
+
+CREATE TABLE cr_temp.gtt_agg_books_order_3 AS
+select null as icd_fl, 1 as cdh_fl,ICD_ID, cdh_id
+/*--START--*/
+
+, NVL2(ord_num, ord_num::text,'(NULL)') as ord_num
+, NVL2(dnr_recip_cd, dnr_recip_cd::text,'(NULL)') as dnr_recip_cd
+, NVL2(ord_prem_flg, ord_prem_flg::text,'(NULL)') as ord_prem_flg
+, NVL2(ord_cdr_flg, ord_cdr_flg::text,'(NULL)') as ord_cdr_flg
+, NVL2(entr_typ_cd, entr_typ_cd::text,'(NULL)') as entr_typ_cd
+, NVL2(TO_CHAR(trn_dt,'DD-MON-YY'), TO_CHAR(trn_dt,'DD-MON-YY')::text,'(NULL)') as trn_dt
+, NVL2(TO_CHAR(ord_dt,'DD-MON-YY'), TO_CHAR(ord_dt,'DD-MON-YY')::text,'(NULL)') as ord_dt
+, NVL2(ord_stat_cd, ord_stat_cd::text,'(NULL)') as ord_stat_cd
+, NVL2(keycode, keycode::text,'(NULL)') as keycode
+, NVL2(src_cd, src_cd::text,'(NULL)') as src_cd
+, NVL2(trunc(nvl(ord_prod_amt,'0')), trunc(nvl(ord_prod_amt,'0'))::text,'(NULL)') as ord_prod_amt
+, NVL2(trunc(nvl(ord_ship_amt,'0')), trunc(nvl(ord_ship_amt,'0'))::text,'(NULL)') as ord_ship_amt
+, NVL2(trunc(nvl(ord_tax_amt,'0')), trunc(nvl(ord_tax_amt,'0'))::text,'(NULL)') as ord_tax_amt
+, NVL2(trunc(nvl(ord_misc_amt,'0')), trunc(nvl(ord_misc_amt,'0'))::text,'(NULL)') as ord_misc_amt
+, NVL2(trunc(nvl(ord_gft_cert_amt,'0')), trunc(nvl(ord_gft_cert_amt,'0'))::text,'(NULL)') as ord_gft_cert_amt
+, NVL2(trunc(nvl(ord_coupn_amt,'0')), trunc(nvl(ord_coupn_amt,'0'))::text,'(NULL)') as ord_coupn_amt
+, NVL2(trunc(nvl(ord_disc_amt,'0')), trunc(nvl(ord_disc_amt,'0'))::text,'(NULL)') as ord_disc_amt
+, NVL2(trunc(nvl(ord_value_amt,'0')), trunc(nvl(ord_value_amt,'0'))::text,'(NULL)') as ord_value_amt
+, NVL2(istlmt_cd, istlmt_cd::text,'(NULL)') as istlmt_cd
+, NVL2(gift_ord_cd, gift_ord_cd::text,'(NULL)') as gift_ord_cd
+, NVL2(currncy_typ_cd, currncy_typ_cd::text,'(NULL)') as currncy_typ_cd
+, NVL2(crd_stat_cd, crd_stat_cd::text,'(NULL)') as crd_stat_cd
+, NVL2(trunc(nvl(pmt_amt,'0')), trunc(nvl(pmt_amt,'0'))::text,'(NULL)') as pmt_amt
+, NVL2(TO_CHAR(lst_pmt_dt,'DD-MON-YY'), TO_CHAR(lst_pmt_dt,'DD-MON-YY')::text,'(NULL)') as lst_pmt_dt
+, NVL2(TO_CHAR(lst_pmt_ret_dt,'DD-MON-YY'), TO_CHAR(lst_pmt_ret_dt,'DD-MON-YY')::text,'(NULL)') as lst_pmt_ret_dt
+, NVL2(trunc(nvl(wr_off_amt,'0')), trunc(nvl(wr_off_amt,'0'))::text,'(NULL)') as wr_off_amt
+, NVL2(TO_CHAR(lst_wr_off_dt,'DD-MON-YY'), TO_CHAR(lst_wr_off_dt,'DD-MON-YY')::text,'(NULL)') as lst_wr_off_dt
+, NVL2(trunc(nvl(coll_amt,'0')), trunc(nvl(coll_amt,'0'))::text,'(NULL)') as coll_amt
+, NVL2(TO_CHAR(lst_coll_dt,'DD-MON-YY'), TO_CHAR(lst_coll_dt,'DD-MON-YY')::text,'(NULL)') as lst_coll_dt
+
+/*---END---*/
+from prod.agg_books_order T_MAIN               inner join crprod_cdh.cr_temp.cdh_id_xref_noconsbaparts on INDIVIDUAL_ID = CDH_ID ;
+
+
+
+------------------------------------------------------------------------TABLE CREATION END\;
+CREATE TABLE cr_temp.diff_mt_books_ord AS
+with hash_diff as (
+
+select  COUNT(ICD_FL) as CNT_ICD_FL, COUNT(CDH_FL) as CNT_CDH_FL, ICD_ID, CDH_ID     , ord_num, dnr_recip_cd, ord_prem_flg, ord_cdr_flg, entr_typ_cd, trn_dt, ord_dt, ord_stat_cd, keycode, src_cd, ord_prod_amt, ord_ship_amt, ord_tax_amt, ord_misc_amt, ord_gft_cert_amt, ord_coupn_amt, ord_disc_amt, ord_value_amt, istlmt_cd, gift_ord_cd, currncy_typ_cd, crd_stat_cd, pmt_amt, lst_pmt_dt, lst_pmt_ret_dt, wr_off_amt, lst_wr_off_dt, coll_amt, lst_coll_dt
+from (
+select  ICD_ID, cdh_id, to_number(ICD_FL,9) as ICD_FL, to_number(CDH_FL,9) as CDH_FL , ord_num, dnr_recip_cd, ord_prem_flg, ord_cdr_flg, entr_typ_cd, trn_dt, ord_dt, ord_stat_cd, keycode, src_cd, ord_prod_amt, ord_ship_amt, ord_tax_amt, ord_misc_amt, ord_gft_cert_amt, ord_coupn_amt, ord_disc_amt, ord_value_amt, istlmt_cd, gift_ord_cd, currncy_typ_cd, crd_stat_cd, pmt_amt, lst_pmt_dt, lst_pmt_ret_dt, wr_off_amt, lst_wr_off_dt, coll_amt, lst_coll_dt
+from cr_temp.GTT_MT_BOOKS_ORD
+union all
+select  ICD_ID, cdh_id, to_number(ICD_FL,9) as ICD_FL, to_number(CDH_FL,9) as CDH_FL , ord_num, dnr_recip_cd, ord_prem_flg, ord_cdr_flg, entr_typ_cd, trn_dt, ord_dt, ord_stat_cd, keycode, src_cd, ord_prod_amt, ord_ship_amt, ord_tax_amt, ord_misc_amt, ord_gft_cert_amt, ord_coupn_amt, ord_disc_amt, ord_value_amt, istlmt_cd, gift_ord_cd, currncy_typ_cd, crd_stat_cd, pmt_amt, lst_pmt_dt, lst_pmt_ret_dt, wr_off_amt, lst_wr_off_dt, coll_amt, lst_coll_dt
+from cr_temp.gtt_agg_books_order_3
+)
+
+group by ICD_ID, CDH_ID                                                              , ord_num, dnr_recip_cd, ord_prem_flg, ord_cdr_flg, entr_typ_cd, trn_dt, ord_dt, ord_stat_cd, keycode, src_cd, ord_prod_amt, ord_ship_amt, ord_tax_amt, ord_misc_amt, ord_gft_cert_amt, ord_coupn_amt, ord_disc_amt, ord_value_amt, istlmt_cd, gift_ord_cd, currncy_typ_cd, crd_stat_cd, pmt_amt, lst_pmt_dt, lst_pmt_ret_dt, wr_off_amt, lst_wr_off_dt, coll_amt, lst_coll_dt
+having COUNT(ICD_FL)!=COUNT(CDH_FL)
+order by ICD_ID, CDH_ID, COUNT(ICD_FL) desc, COUNT(CDH_FL) desc
+)
+select * from hash_diff;
+
+select top 300 * from cr_temp.diff_mt_books_ord
+ where 1=1
+;
+
+
+with icd as (select * from cr_temp.diff_mt_books_ord where 1=1 and cnt_icd_fl = 1)
+,    cdh as (select * from cr_temp.diff_mt_books_ord where 1=1 and cnt_cdh_fl = 1)
+, diff as (select icd.cnt_icd_fl||cdh.cnt_cdh_fl as match_fl, icd.icd_id ,cdh.cdh_id
+
+, case when icd.ord_num = cdh.ord_num then '' else icd.ord_num||'&lt;&gt;'||cdh.ord_num /*#*/end ord_num_diff
+, case when icd.dnr_recip_cd = cdh.dnr_recip_cd then '' else icd.dnr_recip_cd||'&lt;&gt;'||cdh.dnr_recip_cd /*#*/end dnr_recip_cd_diff
+, case when icd.ord_prem_flg = cdh.ord_prem_flg then '' else icd.ord_prem_flg||'&lt;&gt;'||cdh.ord_prem_flg /*#*/end ord_prem_flg_diff
+, case when icd.ord_cdr_flg = cdh.ord_cdr_flg then '' else icd.ord_cdr_flg||'&lt;&gt;'||cdh.ord_cdr_flg /*#*/end ord_cdr_flg_diff
+, case when icd.entr_typ_cd = cdh.entr_typ_cd then '' else icd.entr_typ_cd||'&lt;&gt;'||cdh.entr_typ_cd /*#*/end entr_typ_cd_diff
+, case when icd.trn_dt = cdh.trn_dt then '' else icd.trn_dt||'&lt;&gt;'||cdh.trn_dt /*#*/end trn_dt_diff
+, case when icd.ord_dt = cdh.ord_dt then '' else icd.ord_dt||'&lt;&gt;'||cdh.ord_dt /*#*/end ord_dt_diff
+, case when icd.ord_stat_cd = cdh.ord_stat_cd then '' else icd.ord_stat_cd||'&lt;&gt;'||cdh.ord_stat_cd /*#*/end ord_stat_cd_diff
+, case when icd.keycode = cdh.keycode then '' else icd.keycode||'&lt;&gt;'||cdh.keycode /*#*/end keycode_diff
+, case when icd.src_cd = cdh.src_cd then '' else icd.src_cd||'&lt;&gt;'||cdh.src_cd /*#*/end src_cd_diff
+, case when icd.ord_prod_amt = cdh.ord_prod_amt then '' else icd.ord_prod_amt||'&lt;&gt;'||cdh.ord_prod_amt /*#*/end ord_prod_amt_diff
+, case when icd.ord_ship_amt = cdh.ord_ship_amt then '' else icd.ord_ship_amt||'&lt;&gt;'||cdh.ord_ship_amt /*#*/end ord_ship_amt_diff
+, case when icd.ord_tax_amt = cdh.ord_tax_amt then '' else icd.ord_tax_amt||'&lt;&gt;'||cdh.ord_tax_amt /*#*/end ord_tax_amt_diff
+, case when icd.ord_misc_amt = cdh.ord_misc_amt then '' else icd.ord_misc_amt||'&lt;&gt;'||cdh.ord_misc_amt /*#*/end ord_misc_amt_diff
+, case when icd.ord_gft_cert_amt = cdh.ord_gft_cert_amt then '' else icd.ord_gft_cert_amt||'&lt;&gt;'||cdh.ord_gft_cert_amt /*#*/end ord_gft_cert_amt_diff
+, case when icd.ord_coupn_amt = cdh.ord_coupn_amt then '' else icd.ord_coupn_amt||'&lt;&gt;'||cdh.ord_coupn_amt /*#*/end ord_coupn_amt_diff
+, case when icd.ord_disc_amt = cdh.ord_disc_amt then '' else icd.ord_disc_amt||'&lt;&gt;'||cdh.ord_disc_amt /*#*/end ord_disc_amt_diff
+, case when icd.ord_value_amt = cdh.ord_value_amt then '' else icd.ord_value_amt||'&lt;&gt;'||cdh.ord_value_amt /*#*/end ord_value_amt_diff
+, case when icd.istlmt_cd = cdh.istlmt_cd then '' else icd.istlmt_cd||'&lt;&gt;'||cdh.istlmt_cd /*#*/end istlmt_cd_diff
+, case when icd.gift_ord_cd = cdh.gift_ord_cd then '' else icd.gift_ord_cd||'&lt;&gt;'||cdh.gift_ord_cd /*#*/end gift_ord_cd_diff
+, case when icd.currncy_typ_cd = cdh.currncy_typ_cd then '' else icd.currncy_typ_cd||'&lt;&gt;'||cdh.currncy_typ_cd /*#*/end currncy_typ_cd_diff
+, case when icd.crd_stat_cd = cdh.crd_stat_cd then '' else icd.crd_stat_cd||'&lt;&gt;'||cdh.crd_stat_cd /*#*/end crd_stat_cd_diff
+, case when icd.pmt_amt = cdh.pmt_amt then '' else icd.pmt_amt||'&lt;&gt;'||cdh.pmt_amt /*#*/end pmt_amt_diff
+, case when icd.lst_pmt_dt = cdh.lst_pmt_dt then '' else icd.lst_pmt_dt||'&lt;&gt;'||cdh.lst_pmt_dt /*#*/end lst_pmt_dt_diff
+, case when icd.lst_pmt_ret_dt = cdh.lst_pmt_ret_dt then '' else icd.lst_pmt_ret_dt||'&lt;&gt;'||cdh.lst_pmt_ret_dt /*#*/end lst_pmt_ret_dt_diff
+, case when icd.wr_off_amt = cdh.wr_off_amt then '' else icd.wr_off_amt||'&lt;&gt;'||cdh.wr_off_amt /*#*/end wr_off_amt_diff
+, case when icd.lst_wr_off_dt = cdh.lst_wr_off_dt then '' else icd.lst_wr_off_dt||'&lt;&gt;'||cdh.lst_wr_off_dt /*#*/end lst_wr_off_dt_diff
+, case when icd.coll_amt = cdh.coll_amt then '' else icd.coll_amt||'&lt;&gt;'||cdh.coll_amt /*#*/end coll_amt_diff
+, case when icd.lst_coll_dt = cdh.lst_coll_dt then '' else icd.lst_coll_dt||'&lt;&gt;'||cdh.lst_coll_dt /*#*/end lst_coll_dt_diff
+
+
+, '||                    ICD                    &gt;&gt;' as sep1, icd.*
+, '||                    CDH                    &gt;&gt;' as sep2, cdh.*
+
+from  icd full join cdh
+on icd.icd_id = cdh.icd_id and icd.cdh_id = cdh.cdh_id )
+select top 1000 *
+from diff
+------------------------------------------------------------------------RUN ALL ABOVE
+;
+drop table  cr_temp.diff_mt_books_ord
+;
+select * from   cr_temp.GTT_MT_BOOKS_ORD  where icd_id = xxxxxxxxxxxxxxxxxxxxxx
+;
+select * from   cr_temp.gtt_agg_books_order_3  where cdh_id = xxxxxxxxxxxxxxxxxxxxxx
+;
+select count(*) from   cr_temp.GTT_MT_BOOKS_ORD
+;
+select count(*) from   cr_temp.gtt_agg_books_order_3
+;
+--truncate table    cr_temp.GTT_MT_BOOKS_ORD;
+drop table  cr_temp.GTT_MT_BOOKS_ORD;
+--truncate table cr_temp.gtt_agg_books_order_3;
+drop table  cr_temp.gtt_agg_books_order_3;
+
+</SQL>
+    <Name>Tab 4</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>•	Agg_books_item
+•	Agg_books_order
+•	Agg_digital_item
+•	Agg_digital_order
+•	Agg_print_order
+•	Agg_account_number
+
+
+;
+
+;
+SELECT TOP 100 *
+FROM prod.Agg_print_order
+WHERE 1=1
+</SQL>
+    <Name>Tab 3</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>;
+create table cr_temp.GTT_MT_OFFLINE_ORD_3 as
+select 1 as icd_fl, null as cdh_fl,ICD_ID, cdh_id
+/*--START--*/
+--, NVL2(ord_id, ord_id::text,'(NULL)') as ord_id
+, NVL2(ord_num, ord_num::text,'(NULL)') as ord_num
+, NVL2(TO_CHAR(ord_dt,'DD-MON-YY'), TO_CHAR(ord_dt,'DD-MON-YY')::text,'(NULL)') as ord_dt
+, NVL2(stat_cd, stat_cd::text,'(NULL)') as stat_cd
+, NVL2(TO_CHAR(cplt_dt,'DD-MON-YY'), TO_CHAR(cplt_dt,'DD-MON-YY')::text,'(NULL)') as cplt_dt
+, NVL2(entr_typ_cd, entr_typ_cd::text,'(NULL)') as entr_typ_cd
+, NVL2(cr_stat_cd, cr_stat_cd::text,'(NULL)') as cr_stat_cd
+, NVL2(canc_flg, canc_flg::text,'(NULL)') as canc_flg
+, NVL2(canc_rsn_cd, canc_rsn_cd::text,'(NULL)') as canc_rsn_cd
+, NVL2(TO_CHAR(canc_dt,'DD-MON-YY'), TO_CHAR(canc_dt,'DD-MON-YY')::text,'(NULL)') as canc_dt
+, NVL2(iss_canc_num, iss_canc_num::text,'(NULL)') as iss_canc_num
+, NVL2(trunc(nvl(term_mth_cnt,'0')), trunc(nvl(term_mth_cnt,'0'))::text,'(NULL)') as term_mth_cnt
+, NVL2(trunc(nvl(net_val_amt,'0')), trunc(nvl(net_val_amt,'0'))::text,'(NULL)') as net_val_amt
+, NVL2(trunc(nvl(agcy_grs_val_amt,'0')), trunc(nvl(agcy_grs_val_amt,'0'))::text,'(NULL)') as agcy_grs_val_amt
+, NVL2(ofr_chngd_flg, ofr_chngd_flg::text,'(NULL)') as ofr_chngd_flg
+, NVL2(rnw_cd, rnw_cd::text,'(NULL)') as rnw_cd
+, NVL2(mlt_cpy_flg, mlt_cpy_flg::text,'(NULL)') as mlt_cpy_flg
+, NVL2(src_cd, src_cd::text,'(NULL)') as src_cd
+, NVL2(md_cd, md_cd::text,'(NULL)') as md_cd
+, NVL2(mag_cd, mag_cd::text,'(NULL)') as mag_cd
+, NVL2(mag_catg_cd, mag_catg_cd::text,'(NULL)') as mag_catg_cd
+, NVL2(set_cd, set_cd::text,'(NULL)') as set_cd
+, NVL2(bulk_flg, bulk_flg::text,'(NULL)') as bulk_flg
+, NVL2(keycode, keycode::text,'(NULL)') as keycode
+, NVL2(spec_info_txt, spec_info_txt::text,'(NULL)') as spec_info_txt
+, NVL2(agcy_cd, agcy_cd::text,'(NULL)') as agcy_cd
+, NVL2(prev_exp_iss_num, prev_exp_iss_num::text,'(NULL)') as prev_exp_iss_num
+, NVL2(orig_strt_iss_num, orig_strt_iss_num::text,'(NULL)') as orig_strt_iss_num
+, NVL2(orig_ord_flg, orig_ord_flg::text,'(NULL)') as orig_ord_flg
+, NVL2(TO_CHAR(first_dt,'DD-MON-YY'), TO_CHAR(first_dt,'DD-MON-YY')::text,'(NULL)') as first_dt
+, NVL2(trunc(nvl(pd_amt,'0')), trunc(nvl(pd_amt,'0'))::text,'(NULL)') as pd_amt
+, NVL2(TO_CHAR(pmt_dt,'DD-MON-YY'), TO_CHAR(pmt_dt,'DD-MON-YY')::text,'(NULL)') as pmt_dt
+, NVL2(pmt_mthd_cd, pmt_mthd_cd::text,'(NULL)') as pmt_mthd_cd
+, NVL2(pmt_typ_cd, pmt_typ_cd::text,'(NULL)') as pmt_typ_cd
+, NVL2(trunc(nvl(tax_pd_amt,'0')), trunc(nvl(tax_pd_amt,'0'))::text,'(NULL)') as tax_pd_amt
+, NVL2(trunc(nvl(spec_hdlg_pd_amt,'0')), trunc(nvl(spec_hdlg_pd_amt,'0'))::text,'(NULL)') as spec_hdlg_pd_amt
+, NVL2(blg_key_num, blg_key_num::text,'(NULL)') as blg_key_num
+
+/*---END---*/
+
+from cr_temp.MT_OFFLINE_ORD T_MAIN  inner join crprod_cdh.cr_temp.cdh_id_xref_noconsbaparts on INDIVIDUAL_ID = ICD_ID ;
+
+CREATE TABLE cr_temp.gtt_agg_print_order_3 AS
+select null as icd_fl, 1 as cdh_fl,ICD_ID, cdh_id
+/*--START--*/
+, NVL2(ord_id, ord_id::text,'(NULL)') as ord_id
+, NVL2(ord_num, ord_num::text,'(NULL)') as ord_num
+, NVL2(TO_CHAR(ord_dt,'DD-MON-YY'), TO_CHAR(ord_dt,'DD-MON-YY')::text,'(NULL)') as ord_dt
+, NVL2(stat_cd, stat_cd::text,'(NULL)') as stat_cd
+, NVL2(TO_CHAR(cplt_dt,'DD-MON-YY'), TO_CHAR(cplt_dt,'DD-MON-YY')::text,'(NULL)') as cplt_dt
+, NVL2(entr_typ_cd, entr_typ_cd::text,'(NULL)') as entr_typ_cd
+, NVL2(cr_stat_cd, cr_stat_cd::text,'(NULL)') as cr_stat_cd
+, NVL2(canc_flg, canc_flg::text,'(NULL)') as canc_flg
+, NVL2(canc_rsn_cd, canc_rsn_cd::text,'(NULL)') as canc_rsn_cd
+, NVL2(TO_CHAR(canc_dt,'DD-MON-YY'), TO_CHAR(canc_dt,'DD-MON-YY')::text,'(NULL)') as canc_dt
+, NVL2(iss_canc_num, iss_canc_num::text,'(NULL)') as iss_canc_num
+, NVL2(trunc(nvl(term_mth_cnt,'0')), trunc(nvl(term_mth_cnt,'0'))::text,'(NULL)') as term_mth_cnt
+, NVL2(trunc(nvl(net_val_amt,'0')), trunc(nvl(net_val_amt,'0'))::text,'(NULL)') as net_val_amt
+, NVL2(trunc(nvl(agcy_grs_val_amt,'0')), trunc(nvl(agcy_grs_val_amt,'0'))::text,'(NULL)') as agcy_grs_val_amt
+, NVL2(ofr_chngd_flg, ofr_chngd_flg::text,'(NULL)') as ofr_chngd_flg
+, NVL2(rnw_cd, rnw_cd::text,'(NULL)') as rnw_cd
+, NVL2(mlt_cpy_flg, mlt_cpy_flg::text,'(NULL)') as mlt_cpy_flg
+, NVL2(src_cd, src_cd::text,'(NULL)') as src_cd
+, NVL2(md_cd, md_cd::text,'(NULL)') as md_cd
+, NVL2(mag_cd, mag_cd::text,'(NULL)') as mag_cd
+, NVL2(mag_catg_cd, mag_catg_cd::text,'(NULL)') as mag_catg_cd
+, NVL2(set_cd, set_cd::text,'(NULL)') as set_cd
+, NVL2(bulk_flg, bulk_flg::text,'(NULL)') as bulk_flg
+, NVL2(keycode, keycode::text,'(NULL)') as keycode
+, NVL2(spec_info_txt, spec_info_txt::text,'(NULL)') as spec_info_txt
+, NVL2(agcy_cd, agcy_cd::text,'(NULL)') as agcy_cd
+, NVL2(prev_exp_iss_num, prev_exp_iss_num::text,'(NULL)') as prev_exp_iss_num
+, NVL2(orig_strt_iss_num, orig_strt_iss_num::text,'(NULL)') as orig_strt_iss_num
+, NVL2(orig_ord_flg, orig_ord_flg::text,'(NULL)') as orig_ord_flg
+, NVL2(TO_CHAR(first_dt,'DD-MON-YY'), TO_CHAR(first_dt,'DD-MON-YY')::text,'(NULL)') as first_dt
+, NVL2(trunc(nvl(pd_amt,'0')), trunc(nvl(pd_amt,'0'))::text,'(NULL)') as pd_amt
+, NVL2(TO_CHAR(pmt_dt,'DD-MON-YY'), TO_CHAR(pmt_dt,'DD-MON-YY')::text,'(NULL)') as pmt_dt
+, NVL2(pmt_mthd_cd, pmt_mthd_cd::text,'(NULL)') as pmt_mthd_cd
+, NVL2(pmt_typ_cd, pmt_typ_cd::text,'(NULL)') as pmt_typ_cd
+, NVL2(trunc(nvl(tax_pd_amt,'0')), trunc(nvl(tax_pd_amt,'0'))::text,'(NULL)') as tax_pd_amt
+, NVL2(trunc(nvl(spec_hdlg_pd_amt,'0')), trunc(nvl(spec_hdlg_pd_amt,'0'))::text,'(NULL)') as spec_hdlg_pd_amt
+, NVL2(blg_key_num, blg_key_num::text,'(NULL)') as blg_key_num
+
+/*---END---*/
+from prod.agg_print_order T_MAIN               inner join crprod_cdh.cr_temp.cdh_id_xref_noconsbaparts on INDIVIDUAL_ID = CDH_ID ;
+
+
+
+------------------------------------------------------------------------TABLE CREATION END\;
+CREATE TABLE cr_temp.diff_mt_offline_ord AS
+with hash_diff as (
+
+select  COUNT(ICD_FL) as CNT_ICD_FL, COUNT(CDH_FL) as CNT_CDH_FL, ICD_ID, CDH_ID     , ord_num,  ord_dt, stat_cd, cplt_dt, entr_typ_cd, cr_stat_cd, canc_flg, canc_rsn_cd, canc_dt, iss_canc_num, term_mth_cnt, net_val_amt, agcy_grs_val_amt, ofr_chngd_flg, rnw_cd, mlt_cpy_flg, src_cd, md_cd, mag_cd, mag_catg_cd, set_cd, bulk_flg, keycode, spec_info_txt, agcy_cd, prev_exp_iss_num, orig_strt_iss_num, orig_ord_flg, first_dt, pd_amt, pmt_dt, pmt_mthd_cd, pmt_typ_cd, tax_pd_amt, spec_hdlg_pd_amt, blg_key_num
+from (
+select  ICD_ID, cdh_id, to_number(ICD_FL,9) as ICD_FL, to_number(CDH_FL,9) as CDH_FL , ord_num,  ord_dt, stat_cd, cplt_dt, entr_typ_cd, cr_stat_cd, canc_flg, canc_rsn_cd, canc_dt, iss_canc_num, term_mth_cnt, net_val_amt, agcy_grs_val_amt, ofr_chngd_flg, rnw_cd, mlt_cpy_flg, src_cd, md_cd, mag_cd, mag_catg_cd, set_cd, bulk_flg, keycode, spec_info_txt, agcy_cd, prev_exp_iss_num, orig_strt_iss_num, orig_ord_flg, first_dt, pd_amt, pmt_dt, pmt_mthd_cd, pmt_typ_cd, tax_pd_amt, spec_hdlg_pd_amt, blg_key_num
+from cr_temp.GTT_MT_OFFLINE_ORD_3
+union all
+select  ICD_ID, cdh_id, to_number(ICD_FL,9) as ICD_FL, to_number(CDH_FL,9) as CDH_FL , ord_num,  ord_dt, stat_cd, cplt_dt, entr_typ_cd, cr_stat_cd, canc_flg, canc_rsn_cd, canc_dt, iss_canc_num, term_mth_cnt, net_val_amt, agcy_grs_val_amt, ofr_chngd_flg, rnw_cd, mlt_cpy_flg, src_cd, md_cd, mag_cd, mag_catg_cd, set_cd, bulk_flg, keycode, spec_info_txt, agcy_cd, prev_exp_iss_num, orig_strt_iss_num, orig_ord_flg, first_dt, pd_amt, pmt_dt, pmt_mthd_cd, pmt_typ_cd, tax_pd_amt, spec_hdlg_pd_amt, blg_key_num
+from cr_temp.gtt_agg_print_order_3
+)
+
+group by ICD_ID, CDH_ID                                                              , ord_num,  ord_dt, stat_cd, cplt_dt, entr_typ_cd, cr_stat_cd, canc_flg, canc_rsn_cd, canc_dt, iss_canc_num, term_mth_cnt, net_val_amt, agcy_grs_val_amt, ofr_chngd_flg, rnw_cd, mlt_cpy_flg, src_cd, md_cd, mag_cd, mag_catg_cd, set_cd, bulk_flg, keycode, spec_info_txt, agcy_cd, prev_exp_iss_num, orig_strt_iss_num, orig_ord_flg, first_dt, pd_amt, pmt_dt, pmt_mthd_cd, pmt_typ_cd, tax_pd_amt, spec_hdlg_pd_amt, blg_key_num
+having COUNT(ICD_FL)!=COUNT(CDH_FL)
+order by ICD_ID, CDH_ID, COUNT(ICD_FL) desc, COUNT(CDH_FL) desc
+)
+select * from hash_diff;
+
+select top 300 * from cr_temp.diff_mt_offline_ord
+ where 1=1
+;
+
+
+with icd as (select * from cr_temp.diff_mt_offline_ord where 1=1 and cnt_icd_fl = 1)
+,    cdh as (select * from cr_temp.diff_mt_offline_ord where 1=1 and cnt_cdh_fl = 1)
+, diff as (select icd.cnt_icd_fl||cdh.cnt_cdh_fl as match_fl, icd.icd_id ,cdh.cdh_id
+--, case when icd.ord_id = cdh.ord_id then '' else icd.ord_id||'&lt;&gt;'||cdh.ord_id /*#*/end ord_id_diff
+, case when icd.ord_num = cdh.ord_num then '' else icd.ord_num||'&lt;&gt;'||cdh.ord_num /*#*/end ord_num_diff
+, case when icd.ord_dt = cdh.ord_dt then '' else icd.ord_dt||'&lt;&gt;'||cdh.ord_dt /*#*/end ord_dt_diff
+, case when icd.stat_cd = cdh.stat_cd then '' else icd.stat_cd||'&lt;&gt;'||cdh.stat_cd /*#*/end stat_cd_diff
+, case when icd.cplt_dt = cdh.cplt_dt then '' else icd.cplt_dt||'&lt;&gt;'||cdh.cplt_dt /*#*/end cplt_dt_diff
+, case when icd.entr_typ_cd = cdh.entr_typ_cd then '' else icd.entr_typ_cd||'&lt;&gt;'||cdh.entr_typ_cd /*#*/end entr_typ_cd_diff
+, case when icd.cr_stat_cd = cdh.cr_stat_cd then '' else icd.cr_stat_cd||'&lt;&gt;'||cdh.cr_stat_cd /*#*/end cr_stat_cd_diff
+, case when icd.canc_flg = cdh.canc_flg then '' else icd.canc_flg||'&lt;&gt;'||cdh.canc_flg /*#*/end canc_flg_diff
+, case when icd.canc_rsn_cd = cdh.canc_rsn_cd then '' else icd.canc_rsn_cd||'&lt;&gt;'||cdh.canc_rsn_cd /*#*/end canc_rsn_cd_diff
+, case when icd.canc_dt = cdh.canc_dt then '' else icd.canc_dt||'&lt;&gt;'||cdh.canc_dt /*#*/end canc_dt_diff
+, case when icd.iss_canc_num = cdh.iss_canc_num then '' else icd.iss_canc_num||'&lt;&gt;'||cdh.iss_canc_num /*#*/end iss_canc_num_diff
+, case when icd.term_mth_cnt = cdh.term_mth_cnt then '' else icd.term_mth_cnt||'&lt;&gt;'||cdh.term_mth_cnt /*#*/end term_mth_cnt_diff
+, case when icd.net_val_amt = cdh.net_val_amt then '' else icd.net_val_amt||'&lt;&gt;'||cdh.net_val_amt /*#*/end net_val_amt_diff
+, case when icd.agcy_grs_val_amt = cdh.agcy_grs_val_amt then '' else icd.agcy_grs_val_amt||'&lt;&gt;'||cdh.agcy_grs_val_amt /*#*/end agcy_grs_val_amt_diff
+, case when icd.ofr_chngd_flg = cdh.ofr_chngd_flg then '' else icd.ofr_chngd_flg||'&lt;&gt;'||cdh.ofr_chngd_flg /*#*/end ofr_chngd_flg_diff
+, case when icd.rnw_cd = cdh.rnw_cd then '' else icd.rnw_cd||'&lt;&gt;'||cdh.rnw_cd /*#*/end rnw_cd_diff
+, case when icd.mlt_cpy_flg = cdh.mlt_cpy_flg then '' else icd.mlt_cpy_flg||'&lt;&gt;'||cdh.mlt_cpy_flg /*#*/end mlt_cpy_flg_diff
+, case when icd.src_cd = cdh.src_cd then '' else icd.src_cd||'&lt;&gt;'||cdh.src_cd /*#*/end src_cd_diff
+, case when icd.md_cd = cdh.md_cd then '' else icd.md_cd||'&lt;&gt;'||cdh.md_cd /*#*/end md_cd_diff
+, case when icd.mag_cd = cdh.mag_cd then '' else icd.mag_cd||'&lt;&gt;'||cdh.mag_cd /*#*/end mag_cd_diff
+, case when icd.mag_catg_cd = cdh.mag_catg_cd then '' else icd.mag_catg_cd||'&lt;&gt;'||cdh.mag_catg_cd /*#*/end mag_catg_cd_diff
+, case when icd.set_cd = cdh.set_cd then '' else icd.set_cd||'&lt;&gt;'||cdh.set_cd /*#*/end set_cd_diff
+, case when icd.bulk_flg = cdh.bulk_flg then '' else icd.bulk_flg||'&lt;&gt;'||cdh.bulk_flg /*#*/end bulk_flg_diff
+, case when icd.keycode = cdh.keycode then '' else icd.keycode||'&lt;&gt;'||cdh.keycode /*#*/end keycode_diff
+, case when icd.spec_info_txt = cdh.spec_info_txt then '' else icd.spec_info_txt||'&lt;&gt;'||cdh.spec_info_txt /*#*/end spec_info_txt_diff
+, case when icd.agcy_cd = cdh.agcy_cd then '' else icd.agcy_cd||'&lt;&gt;'||cdh.agcy_cd /*#*/end agcy_cd_diff
+, case when icd.prev_exp_iss_num = cdh.prev_exp_iss_num then '' else icd.prev_exp_iss_num||'&lt;&gt;'||cdh.prev_exp_iss_num /*#*/end prev_exp_iss_num_diff
+, case when icd.orig_strt_iss_num = cdh.orig_strt_iss_num then '' else icd.orig_strt_iss_num||'&lt;&gt;'||cdh.orig_strt_iss_num /*#*/end orig_strt_iss_num_diff
+, case when icd.orig_ord_flg = cdh.orig_ord_flg then '' else icd.orig_ord_flg||'&lt;&gt;'||cdh.orig_ord_flg /*#*/end orig_ord_flg_diff
+, case when icd.first_dt = cdh.first_dt then '' else icd.first_dt||'&lt;&gt;'||cdh.first_dt /*#*/end first_dt_diff
+, case when icd.pd_amt = cdh.pd_amt then '' else icd.pd_amt||'&lt;&gt;'||cdh.pd_amt /*#*/end pd_amt_diff
+, case when icd.pmt_dt = cdh.pmt_dt then '' else icd.pmt_dt||'&lt;&gt;'||cdh.pmt_dt /*#*/end pmt_dt_diff
+, case when icd.pmt_mthd_cd = cdh.pmt_mthd_cd then '' else icd.pmt_mthd_cd||'&lt;&gt;'||cdh.pmt_mthd_cd /*#*/end pmt_mthd_cd_diff
+, case when icd.pmt_typ_cd = cdh.pmt_typ_cd then '' else icd.pmt_typ_cd||'&lt;&gt;'||cdh.pmt_typ_cd /*#*/end pmt_typ_cd_diff
+, case when icd.tax_pd_amt = cdh.tax_pd_amt then '' else icd.tax_pd_amt||'&lt;&gt;'||cdh.tax_pd_amt /*#*/end tax_pd_amt_diff
+, case when icd.spec_hdlg_pd_amt = cdh.spec_hdlg_pd_amt then '' else icd.spec_hdlg_pd_amt||'&lt;&gt;'||cdh.spec_hdlg_pd_amt /*#*/end spec_hdlg_pd_amt_diff
+, case when icd.blg_key_num = cdh.blg_key_num then '' else icd.blg_key_num||'&lt;&gt;'||cdh.blg_key_num /*#*/end blg_key_num_diff
+
+
+, '||                    ICD                    &gt;&gt;' as sep1, icd.*
+, '||                    CDH                    &gt;&gt;' as sep2, cdh.*
+
+from  icd full join cdh
+on icd.icd_id = cdh.icd_id and icd.cdh_id = cdh.cdh_id )
+select top 1000 *
+from diff
+------------------------------------------------------------------------RUN ALL ABOVE
+;
+drop table  cr_temp.diff_mt_offline_ord
+;
+select * from   cr_temp.GTT_MT_OFFLINE_ORD_3  where icd_id = xxxxxxxxxxxxxxxxxxxxxx
+;
+select * from   cr_temp.gtt_agg_print_order_3  where cdh_id = xxxxxxxxxxxxxxxxxxxxxx
+;
+select count(*) from   cr_temp.GTT_MT_OFFLINE_ORD_3
+;
+select count(*) from   cr_temp.gtt_agg_print_order_3
+;
+--truncate table    cr_temp.GTT_MT_OFFLINE_ORD_3;
+drop table  cr_temp.GTT_MT_OFFLINE_ORD_3;
+--truncate table cr_temp.gtt_agg_print_order_3;
+drop table  cr_temp.gtt_agg_print_order_3;
+
+</SQL>
+    <Name>Tab 5</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>with tt1 as (
+--SELECT ix.acx_rm_new_individual_id as individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.data_source
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN MIN(a.preference_value)
+--        WHEN a.data_source IN ('KBL','LSR','DCK')
+--        THEN MAX(a.preference_value)
+--        ELSE NULL
+--    END auth_flg
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.start_date,NULL)),MIN(a.start_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.start_date,NULL)),MIN(a.start_date))
+--        ELSE NULL
+--    END fst_dt
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.end_date,NULL)),MIN(a.end_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.end_date,NULL)),MIN(a.end_date))
+--        ELSE NULL
+--    END eff_dt
+--FROM prod.rm_icd_lookup ix
+--INNER JOIN prod.preference_history a
+--ON (ix.acx_rm_new_individual_id = a.id_value)
+--WHERE ( (a.id_type = 'I')
+--    AND a.preference_value IS NOT NULL)
+--GROUP BY ix.acx_rm_new_individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.DATA_SOURCE
+---------------------------------------------------------------------------------------------
+--UNION ALL
+---------------------------------------------------------------------------------------------,
+--SELECT me.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.data_source
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN MIN(a.preference_value)
+--        WHEN a.data_source IN ('KBL', 'LSR', 'DCK')
+--        THEN MAX(a.preference_value)
+--        ELSE NULL
+--    END auth_flg
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.start_date,NULL)),MIN(a.start_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.start_date,NULL)),MIN(a.start_date))
+--        ELSE NULL
+--    END fst_dt
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.end_date,NULL)),MIN(a.end_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.end_date,NULL)),MIN(a.end_date))
+--        ELSE NULL
+--    END eff_dt
+--FROM (prod.agg_email me
+--INNER JOIN prod.preference_history a
+--ON (me.email_address = a.id_value))
+----INNER JOIN prod.rm_icd_lookup ix
+----ON (ix.acx_rm_new_individual_id = me.INDIVIDUAL_ID)
+--WHERE ( ( ( ( (me.EMAIL_TYPE_CD = 'I')
+--    AND a.id_type = 'E')
+--    AND a.preference_scope &lt;&gt; 'PNL')
+--    AND a.preference_scope NOT LIKE 'NEW%')
+--    AND a.preference_value IS NOT NULL)
+--GROUP BY me.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.DATA_SOURCE
+-------------------------------------------------------------------------------------------
+--UNION ALL
+---------------------------------------------------------------------------------------------,
+--SELECT me.individual_id
+--  , DECODE(a.id_type,'E','M')
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.data_source
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN MIN(a.preference_value)
+--        WHEN a.data_source IN ('KBL', 'LSR', 'DCK')
+--        THEN MAX(a.preference_value)
+--        ELSE NULL
+--    END auth_flg
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.start_date,NULL)),MIN(a.start_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.start_date,NULL)),MIN(a.start_date))
+--        ELSE NULL
+--    END fst_dt
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.end_date,NULL)),MIN(a.end_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.end_date,NULL)),MIN(a.end_date))
+--        ELSE NULL
+--    END eff_dt
+--FROM (prod.agg_email me
+--INNER JOIN prod.preference_history a
+--ON (me.email_address = a.id_value))
+----INNER JOIN prod.rm_icd_lookup ix
+----ON (ix.acx_rm_new_individual_id = me.INDIVIDUAL_ID)
+--WHERE ( ( ( ( (me.EMAIL_TYPE_CD = 'M')
+--    AND a.id_type = 'E')
+--    AND a.preference_code = 'EMAIL')
+--    AND a.preference_scope = 'PNL')
+--    AND a.preference_value IS NOT NULL)
+--GROUP BY me.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.DATA_SOURCE
+---------------------------------------------------------------------------------------------
+--UNION ALL
+---------------------------------------------------------------------------------------------,
+--SELECT me.individual_id
+--  , DECODE(a.id_type,'E','N')
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.data_source
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN MIN(a.preference_value)
+--        WHEN a.data_source IN ('KBL', 'LSR', 'DCK')
+--        THEN MAX(a.preference_value)
+--        ELSE NULL
+--    END auth_flg
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.start_date,NULL)),MIN(a.start_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.start_date,NULL)),MIN(a.start_date))
+--        ELSE NULL
+--    END fst_dt
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.end_date,NULL)),MIN(a.end_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.end_date,NULL)),MIN(a.end_date))
+--        ELSE NULL
+--    END eff_dt
+--FROM (prod.agg_email me
+--INNER JOIN prod.preference_history a
+--ON (me.email_address = a.id_value))
+----INNER JOIN prod.rm_icd_lookup ix
+----ON (ix.acx_rm_new_individual_id = me.INDIVIDUAL_ID)
+--WHERE ( ( ( ( (me.EMAIL_TYPE_CD = 'N')
+--    AND a.id_type = 'E')
+--    AND a.preference_code = 'EMAIL')
+--    AND a.preference_scope LIKE 'NEW%')
+--    AND a.preference_value IS NOT NULL)
+--GROUP BY me.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.DATA_SOURCE
+---------------------------------------------------------------------------------------------
+--UNION ALL
+---------------------------------------------------------------------------------------------,
+--SELECT me.individual_id
+--  , DECODE(a.id_type,'E','C')
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.data_source
+--  , CASE
+--        WHEN a.data_source IN ('CVO')
+--        THEN MIN(a.preference_value)
+--        ELSE NULL
+--    END auth_flg
+--  , CASE
+--        WHEN a.data_source IN ('CVO')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.start_date,NULL)),MIN(a.start_date))
+--        ELSE NULL
+--    END fst_dt
+--  , CASE
+--        WHEN a.data_source IN ('CVO')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.end_date,NULL)),MIN(a.end_date))
+--        ELSE NULL
+--    END eff_dt
+--FROM (prod.agg_email me
+--INNER JOIN prod.preference_history a
+--ON (me.email_address = a.id_value))
+----INNER JOIN prod.rm_icd_lookup ix
+----ON (ix.acx_rm_new_individual_id = me.INDIVIDUAL_ID)
+--WHERE ( ( ( ( ( ( me.EMAIL_TYPE_CD = 'A')
+--    AND a.id_type = 'E')
+--    AND a.DATA_SOURCE = 'CVO')
+--    AND a.preference_code = 'EMAIL')
+--    AND a.preference_scope IN ('ADV', 'CVONEWS', 'CVOAA', 'CVOFR'))
+--    AND a.preference_value IS NOT NULL)
+--GROUP BY me.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.DATA_SOURCE
+---------------------------------------------------------------------------------------------
+--UNION ALL
+---------------------------------------------------------------------------------------------,
+--SELECT ia.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.data_source
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN MIN(a.preference_value)
+--        WHEN a.data_source IN ('KBL', 'LSR', 'DCK')
+--        THEN MAX(a.preference_value)
+--        ELSE NULL
+--    END auth_flg
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.start_date,NULL)),MIN(a.start_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.start_date,NULL)),MIN(a.start_date))
+--        ELSE NULL
+--    END fst_dt
+--  , CASE
+--        WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+--        THEN NVL(MIN(DECODE(a.preference_value,'N',a.end_date,NULL)),MIN(a.end_date))
+--        WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+--        THEN NVL(MIN(DECODE(a.preference_value,'Y',a.end_date,NULL)),MIN(a.end_date))
+--        ELSE NULL
+--    END eff_dt
+--FROM (prod.individual_address ia
+--INNER JOIN prod.preference_history a
+--ON (ia.ADDRESS_ID = a.id_value))
+----INNER JOIN prod.rm_icd_lookup ix
+----ON (ix.acx_rm_new_individual_id = ia.INDIVIDUAL_ID)
+--WHERE ( (a.id_type = 'A')
+--    AND a.preference_value IS NOT NULL)
+--GROUP BY ia.individual_id
+--  , a.id_type
+--  , a.preference_code
+--  , a.preference_scope
+--  , a.DATA_SOURCE
+---------------------------------------------------------------------------------------------
+----Telecom/Individual Phone are being commented out at Ed's request. We are assuming Telephones will be deprecated.
+---- UNION ALL
+---- -------------------------------------------------------------------------------------------,
+---- SELECT
+---- ix.acx_rm_new_individual_id,
+---- a.id_type,
+---- a.preference_code,
+---- a.preference_scope,
+---- a.data_source,
+---- CASE WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+---- THEN min(a.preference_value)
+---- WHEN a.data_source IN ('KBL', 'LSR', 'DCK')
+---- THEN max(a.preference_value)
+---- ELSE null
+---- END auth_flg,
+---- CASE WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+---- THEN nvl(min(decode(a.preference_value,'N',a.start_date,null)),min(a.start_date))
+---- WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+---- THEN nvl(min(decode(a.preference_value,'Y',a.start_date,null)),min(a.start_date))
+---- ELSE null
+---- END fst_dt,
+---- CASE WHEN a.data_source IN ('TLS','DM','AX','AG','FC','IB','CDS','PWI','BMO','DGI','CDB','DMP','CCC','CU','CVO','AMP','CA','FAD')
+---- THEN nvl(min(decode(a.preference_value,'N',a.end_date,null)),min(a.end_date))
+---- WHEN a.data_source IN ('KBL', 'DCK', 'LSR')
+---- THEN nvl(min(decode(a.preference_value,'Y',a.end_date,null)),min(a.end_date))
+---- ELSE null
+---- END eff_dt
+---- FROM (prod.individual_phone t
+---- INNER JOIN prod.preference_history a
+---- ON (t.acx_valid_phone = a.id_value))
+---- INNER JOIN prod.rm_icd_lookup ix
+---- ON (ix.acx_rm_new_individual_id = t.INDIVIDUAL_ID)
+---- WHERE ( (ix./*REMOVE_ME*/ = 'A'
+---- AND a.id_type = 'T')
+---- AND a.preference_value IS NOT NULL)
+---- GROUP BY ix.acx_rm_new_individual_id
+---- , a.id_type
+---- , a.preference_code
+---- , a.preference_scope
+---- , a.DATA_SOURCE
+---------------------------------------------------------------------------------------------
+--UNION ALL
+---------------------------------------------------------------------------------------------,
+SELECT acc.individual_id
+  , 'I' assoc_typ_cd
+  , 'GFTREN' auth_cd
+  , 'GLB' scp_cd
+  , 'CDS' data_source
+  , 'N' auth_flg
+  , sysdate fst_dt
+  , sysdate eff_dt
+FROM prod.account acc
+LEFT JOIN prod.print_account_detail pad
+ON  pad.hash_account_id = acc.hash_account_id
+WHERE 1=1
+    --V--Stanis: Offline/Print accounts only. ICD.OFFLINE_ACCOUNT
+    AND acc.source_name = 'CDS'
+    AND acc.account_subtype_code IN ('CNS', 'CRH', 'CRM', 'SHM')
+    AND NVL (substring(pad.gift_keycode, 1, 1), 'X') NOT IN ('*', '/', '&amp;', 'X')
+    --V--Stanis: excluding books for good measure
+    AND NOT EXISTS
+    (SELECT NULL FROM prod.books_account ba WHERE ba.hash_account_id = acc.hash_account_id
+    )
+GROUP BY acc.individual_id
+-------------------------------------------------------------------------------------------
+UNION ALL
+-------------------------------------------------------------------------------------------,
+SELECT ACC.INDIVIDUAL_ID
+  , 'I' assoc_typ_cd
+  , 'GFTOPT' auth_cd
+  , 'GLB' scp_cd
+  , 'CDS' data_source
+  , 'N' auth_flg
+  , sysdate fst_dt
+  , sysdate eff_dt
+FROM prod.account acc
+LEFT JOIN prod.print_account_detail pad
+ON  pad.hash_account_id = acc.hash_account_id
+WHERE 1=1
+    --V--Stanis: Offline/Print accounts only. ICD.OFFLINE_ACCOUNT
+    AND acc.source_name = 'CDS'
+    AND acc.account_subtype_code IN ( 'CNS', 'CRH', 'CRM', 'CRT', 'CRE', 'SHM' )
+    AND substring(pad.gift_keycode, 1, 1) IN ( '*', '/', '&amp;' )
+    --V--Stanis: excluding books for good measure
+    AND NOT EXISTS
+    (SELECT NULL FROM prod.books_account ba WHERE ba.hash_account_id = acc.hash_account_id
+    )
+GROUP BY acc.individual_id
+)
+
+select count(*)
+from tt1
+where exists (select null from cr_temp.cdh_id_xref_noconsbaparts rm where tt1.individual_id = rm.cdh_id)
+;
+NCBI ICD--227,384,909
+NCBI CDH--227,365,113
+-----
+220053082
+220053684
+</SQL>
+    <Name>Tab 7</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>DROP TABLE IF EXISTS cr_temp.ofl_brks_temp;
+
+CREATE TABLE cr_temp.ofl_brks_temp 
+	DISTSTYLE KEY DISTKEY(individual_id) 
+	INTERLEAVED SORTKEY(individual_id) 
+AS
+WITH t2 AS
+(
+	SELECT
+		  oa.individual_id
+		, CASE
+			WHEN pa.magazine_code = 'CNS'
+			THEN CASE
+				WHEN MONTHS_BETWEEN(strt_lkp.pub_date
+					, NVL(MAX(end_lkp.pub_date) 
+						OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+					, strt_lkp.pub_date)) &gt; 6
+				THEN MAX(end_lkp.pub_date) 
+					OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+				ELSE NULL
+			  END
+			ELSE NULL
+		  END cro_brk_dt
+		, CASE
+			WHEN pa.magazine_code = 'CNS'
+			THEN MIN(original_strt_iss_num) OVER (PARTITION BY oa.individual_id, pa.magazine_code)
+		  END cns_orig_strt_iss_num
+		, CASE
+			WHEN pa.magazine_code = 'CRH'
+			THEN CASE
+				WHEN MONTHS_BETWEEN(strt_lkp.pub_date
+					, NVL(MAX(end_lkp.pub_date)
+						OVER ( PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+					, strt_lkp.pub_date)) &gt; 6
+				THEN MAX(end_lkp.pub_date)
+					OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+				ELSE NULL
+			  END
+			ELSE NULL
+		  END hl_brk_dt
+		, CASE
+			WHEN pa.magazine_code = 'CRH'
+			THEN MIN(original_strt_iss_num) OVER ( PARTITION BY oa.individual_id, pa.magazine_code)
+		  END crh_orig_strt_iss_num
+		, CASE
+			WHEN pa.magazine_code = 'CRM'
+			THEN CASE
+				WHEN MONTHS_BETWEEN(strt_lkp.pub_date
+					, NVL(MAX(end_lkp.pub_date)
+						OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+					, strt_lkp.pub_date)) &gt; 6
+				THEN MAX(end_lkp.pub_date)
+					OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+				ELSE NULL
+			  END
+			ELSE NULL
+		  END ma_brk_dt
+		, CASE
+			WHEN pa.magazine_code = 'CRM'
+			THEN MIN(original_strt_iss_num) OVER ( PARTITION BY oa.individual_id, pa.magazine_code)
+		  END crm_orig_strt_iss_num
+		, CASE
+			WHEN pa.magazine_code = 'SHM'
+			THEN CASE
+				WHEN MONTHS_BETWEEN(strt_lkp.pub_date
+					, NVL(MAX(end_lkp.pub_date) 
+						OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+					, strt_lkp.pub_date)) &gt; 6
+				THEN MAX(end_lkp.pub_date)
+					OVER (PARTITION BY oa.individual_id, pa.magazine_code ORDER BY strt_lkp.pub_date ROWS BETWEEN unbounded preceding AND 1 preceding)
+				ELSE NULL
+			  END
+			ELSE NULL
+		  END shm_brk_dt
+		, CASE
+			WHEN pa.magazine_code = 'SHM'
+			THEN MIN(original_strt_iss_num) OVER (PARTITION BY oa.individual_id, pa.magazine_code)
+		  END shm_orig_strt_iss_num
+		, pt.original_strt_iss_num orig_strt_iss_num
+	FROM
+		prod.agg_print_order oo
+		JOIN prod.account oa ON oa.hash_account_id = oo.hash_account_id
+		JOIN prod.print_account_detail pa ON oa.hash_account_id = pa.hash_account_id
+		JOIN prod.action_header ah on ah.source_name = 'CDS' AND ah.action_type = 'ORDER' AND oo.ord_id = ah.action_id
+		JOIN prod.print_transaction pt ON ah.hash_action_id = pt.hash_action_id
+		JOIN etl_proc.lookup_magazine strt_lkp ON strt_lkp.magazine_code = pa.magazine_code AND strt_lkp.iss_num = pt.original_strt_iss_num
+		JOIN etl_proc.lookup_magazine end_lkp ON end_lkp.magazine_code = pa.magazine_code AND end_lkp.iss_num = (pt.original_strt_iss_num + pt.term_month_cnt)
+	WHERE
+		(set_cd NOT IN('B', 'D') OR stat_cd NOT IN ('D'))
+		AND	pa.magazine_code IN ('CNS', 'CRM', 'CRH', 'SHM') 
+)
+, t3 AS
+(
+	SELECT
+		  t2.individual_id
+		, cro_brk_dt
+		, hl_brk_dt,
+  ma_brk_dt,
+  shm_brk_dt,
+  ROW_NUMBER()
+	OVER (
+	  PARTITION BY t2.individual_id
+	  ORDER BY cro_brk_dt DESC nulls LAST) cro_brk_dt_rnk,
+  ROW_NUMBER()
+	OVER (
+	  PARTITION BY t2.individual_id
+	  ORDER BY hl_brk_dt DESC nulls LAST)  hl_brk_dt_rnk,
+  ROW_NUMBER()
+	OVER (
+	  PARTITION BY t2.individual_id
+	  ORDER BY ma_brk_dt DESC nulls LAST)  ma_brk_dt_rnk,
+  ROW_NUMBER()
+	OVER (
+	  PARTITION BY t2.individual_id
+	  ORDER BY shm_brk_dt DESC nulls LAST) shm_brk_dt_rnk,
+  orig_strt_iss_num,
+  cns_orig_strt_iss_num,
+  crh_orig_strt_iss_num,
+  crm_orig_strt_iss_num,
+  shm_orig_strt_iss_num
+FROM t2 
+)
+  SELECT individual_id,
+         MIN(cns_orig_strt_iss_num) cns_orig_strt_iss_num,
+         MIN(crh_orig_strt_iss_num) crh_orig_strt_iss_num,
+         MIN(crm_orig_strt_iss_num) crm_orig_strt_iss_num,
+         MIN(shm_orig_strt_iss_num) shm_orig_strt_iss_num,
+         MAX(CASE
+                WHEN cro_brk_dt_rnk = 1 THEN NVL2(cro_brk_dt, cro_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   last_cro_brk_dt,
+         MAX(CASE
+                WHEN cro_brk_dt_rnk = 2 THEN NVL2(cro_brk_dt, cro_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   prior_cro_brk_dt,
+         COUNT(cro_brk_dt)          cro_brks_cnt,
+         MAX(CASE
+                WHEN hl_brk_dt_rnk = 1 THEN NVL2(hl_brk_dt, hl_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   last_hl_brk_dt,
+         MAX(CASE
+                WHEN hl_brk_dt_rnk = 2 THEN NVL2(hl_brk_dt, hl_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   prior_hl_brk_dt,
+         COUNT(hl_brk_dt)           hl_brks_cnt,
+         MAX(CASE
+                WHEN ma_brk_dt_rnk = 1 THEN NVL2(ma_brk_dt, ma_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   last_ma_brk_dt,
+         MAX(CASE
+                WHEN ma_brk_dt_rnk = 2 THEN NVL2(ma_brk_dt, ma_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   prior_ma_brk_dt,
+         COUNT(ma_brk_dt)           ma_brks_cnt,
+         MAX(CASE
+                WHEN shm_brk_dt_rnk = 1 THEN NVL2(shm_brk_dt, shm_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   last_shm_brk_dt,
+         MAX(CASE
+                WHEN shm_brk_dt_rnk = 2 THEN NVL2(shm_brk_dt, shm_brk_dt ||'|' ||orig_strt_iss_num, NULL)
+                ELSE NULL
+              END)                   prior_shm_brk_dt,
+         COUNT(shm_brk_dt)          shm_brks_cnt
+	FROM t3
+	GROUP BY
+		  individual_id;
+
+
+/*** ofl_combine_temp_temp TEMP POPULATION***/
+DROP TABLE IF EXISTS cr_temp.ofl_combine_temp_temp;
+
+CREATE TABLE cr_temp.ofl_combine_temp_temp
+	DISTSTYLE KEY
+	DISTKEY(individual_id)
+	INTERLEAVED SORTKEY(individual_id)
+AS
+	SELECT
+		  acct.individual_id
+        , CASE
+			WHEN oa.magazine_code = 'CNS' THEN NVL(TO_CHAR(iss.pub_date, 'YYYYMMDD'), '00000000') || acct.source_account_id
+            ELSE NULL
+            END cr_comb_acct_id
+		, CASE
+			WHEN oa.magazine_code = 'CRH' THEN NVL(TO_CHAR(iss.pub_date, 'YYYYMMDD'), '00000000') || acct.source_account_id
+			ELSE NULL
+		  END hl_comb_acct_id
+		, CASE
+			WHEN oa.magazine_code = 'CRM' THEN NVL(TO_CHAR(iss.pub_date, 'YYYYMMDD'), '00000000') || acct.source_account_id
+			ELSE NULL
+		  END ma_comb_acct_id
+		, CASE
+			WHEN oa.magazine_code = 'SHM' THEN NVL(TO_CHAR(iss.pub_date, 'YYYYMMDD'), '00000000') || acct.source_account_id
+			ELSE NULL
+		  END shm_comb_acct_id
+	FROM
+		prod.print_account_detail oa
+		JOIN prod.account acct ON oa.hash_account_id = acct.hash_account_id
+		LEFT JOIN etl_proc.lookup_magazine iss ON oa.magazine_code = iss.magazine_code AND oa.expr_iss_num = iss.iss_num
+	WHERE
+		oa.magazine_code IN ('CNS', 'CRH', 'CRM', 'SHM');
+
+
+/*** ofl_combine_temp TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.ofl_combine_temp;
+
+CREATE TABLE agg.ofl_combine_temp 
+	DISTSTYLE KEY
+	DISTKEY(individual_id)
+	INTERLEAVED SORTKEY(individual_id)
+AS
+SELECT 
+	  individual_id
+	, SUBSTRING(MAX(cr_comb_acct_id), 9)  cr_comb_acct_id
+	, SUBSTRING(MAX(hl_comb_acct_id), 9)  hl_comb_acct_id
+	, SUBSTRING(MAX(ma_comb_acct_id), 9)  ma_comb_acct_id
+	, SUBSTRING(MAX(shm_comb_acct_id), 9) shm_comb_acct_id
+FROM
+	cr_temp.ofl_combine_temp_temp ct
+GROUP BY
+	individual_id;
+
+
+/*** ofl_de_temp TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.ofl_de_temp;
+
+CREATE TABLE agg.ofl_de_temp
+	DISTSTYLE KEY
+	DISTKEY(individual_id)
+	INTERLEAVED SORTKEY(individual_id)
+AS
+SELECT
+	  det.individual_id
+	, det.magazine_code mag_cd
+	, MAX(det.exp_date) exp_dt
+	, COUNT(*) de_cnt
+	, SUBSTRING(MAX(CASE WHEN det.magazine_code = 'CNS' THEN NVL(TO_CHAR(det.exp_date, 'YYYYMMDD'), '00010101') || det.last_source_code ELSE NULL END), 9) eds_lst_src_cd
+	, SUBSTRING(MAX(CASE WHEN det.magazine_code = 'CNS' THEN NVL(TO_CHAR(det.exp_date, 'YYYYMMDD'), '00010101') || det.morbank_mtch_code ELSE NULL END), 9) morbank_mtch_cd
+FROM
+	prod.legacy_dead_expires det
+GROUP BY
+	  det.individual_id
+	, det.magazine_code;
+
+
+/*** ofl_sum_tmp1 TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.ofl_sum_tmp1;
+
+CREATE TABLE agg.ofl_sum_tmp1
+	DISTSTYLE KEY
+	DISTKEY(individual_id)
+	INTERLEAVED SORTKEY(individual_id)
+AS
+SELECT
+	  de.individual_id
+	, de.magazine_code
+	, CASE WHEN de.magazine_code = 'CNS' THEN DECODE(MAX(cds.individual_id), NULL, COUNT(*) - 1, COUNT(*)) ELSE NULL END de_cr_brks_cnt
+	, CASE WHEN de.magazine_code = 'CRH' THEN DECODE(MAX(cds.individual_id), NULL, COUNT(*) - 1, COUNT(*)) ELSE NULL END de_hl_brks_cnt
+FROM
+	prod.legacy_dead_expires de
+	LEFT JOIN (
+			SELECT DISTINCT individual_id, mag_cd
+			FROM prod.agg_print_order
+			WHERE mag_cd IN ('CNS', 'CRH') AND (keycode NOT IN ('VFREE', 'ZFREE')  OR keycode IS NULL) 
+		) cds ON de.individual_id = cds.individual_id AND de.magazine_code = cds.mag_cd
+	JOIN prod.account acct ON de.individual_id = acct.individual_id
+WHERE
+	de.magazine_code IN ('CNS', 'CRH')
+GROUP BY
+	  de.individual_id
+	, de.magazine_code;
+
+
+/*** ofl_sum_tmp2 TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.ofl_sum_tmp2;
+
+CREATE TABLE agg.ofl_sum_tmp2
+	DISTSTYLE KEY
+	DISTKEY(individual_id)
+	INTERLEAVED SORTKEY(individual_id)
+AS
+SELECT
+	  individual_id
+	, SUM(CASE WHEN ofo.mag_cd = 'CNS' THEN ofo.pd_amt END)   cr_ltd_pd_amt
+	, SUM(CASE WHEN ofo.mag_cd = 'CRH' THEN ofo.pd_amt END)   hl_ltd_pd_amt
+	, SUM(CASE WHEN ofo.mag_cd = 'CRM' THEN ofo.pd_amt END)   ma_ltd_pd_amt
+	, SUM(CASE WHEN ofo.mag_cd = 'SHM' THEN ofo.pd_amt END)   shm_ltd_pd_amt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd IN ('06', '50') AND ofo.mag_cd = 'CNS' THEN 1 END) cr_canc_bad_dbt_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd IN ('06', '50') AND ofo.mag_cd = 'CRH' THEN 1 END) hl_canc_bad_dbt_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd IN ('06', '50') AND ofo.mag_cd = 'CRM' THEN 1 END) ma_canc_bad_dbt_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd IN ('06', '50') AND ofo.mag_cd = 'SHM' THEN 1 END) shm_canc_bad_dbt_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND ofo.mag_cd = 'CNS' THEN 1 END) cr_canc_cust_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND ofo.mag_cd = 'CRH' THEN 1 END) hl_canc_cust_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND ofo.mag_cd = 'CRM' THEN 1 END) ma_canc_cust_cnt
+	, COUNT(CASE WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND ofo.mag_cd = 'SHM' THEN 1 END) shm_canc_cust_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'CNS' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') 
+				AND (
+					(SUBSTRING(ofo.keycode, 1, 1) IN ('A', 'G', 'X'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND NVL(SUBSTRING(ofo.keycode, 2, 1), 'X') != 'N')
+					OR (SUBSTRING(ofo.keycode, 1, 1) IN ('B') AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('A', 'B', 'C', 'S'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) IN ('U') AND REGEXP_INSTR(NVL(SUBSTRING(ofo.keycode, 9, 1), '1'), '[^[:alpha:]]') = 1)
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('B', 'C', 'D', 'E', 'F', 'T'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) IN ('U') AND LENGTH(ofo.keycode) = 7
+						AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 6, 1), '[^[:alpha:]]') = 1) 
+				) 
+			THEN 1
+	  END) cr_dm_ord_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'CRH' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+				AND (
+					(SUBSTRING(ofo.keycode, 1, 1) IN ('A', 'G', 'X'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND NVL(SUBSTRING(ofo.keycode, 2, 1), 'X') != 'N')
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('A', 'B', 'C', 'S'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(NVL(SUBSTRING(ofo.keycode, 9, 1), '1'), '[^[:alpha:]]') = 1)
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('B', 'C', 'D', 'E', 'F', 'T'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) IN ('U') AND LENGTH(ofo.keycode) = 7 AND
+						REGEXP_INSTR(SUBSTRING(ofo.keycode, 6, 1), '[^[:alpha:]]') = 1) 
+				)
+			THEN 1
+	  END) hl_dm_ord_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'CRM' 
+			AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+			AND (
+				(SUBSTRING(ofo.keycode, 1, 1) IN ('A', 'G', 'X'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND NVL(SUBSTRING(ofo.keycode, 2, 1), 'X') != 'N')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('A', 'B', 'C', 'S'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(NVL(SUBSTRING(ofo.keycode, 9, 1), '1'), '[^[:alpha:]]') = 1)
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('B', 'C', 'D', 'E', 'F', 'T'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND LENGTH(ofo.keycode) = 7 AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 6, 1), '[^[:alpha:]]') = 1)
+			) THEN 1
+		END) ma_dm_ord_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'SHM'
+			AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+			AND (
+				(SUBSTRING(ofo.keycode, 1, 1) IN ('A', 'G', 'X'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND NVL(SUBSTRING(ofo.keycode, 2, 1), 'X') != 'N')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('A', 'B', 'C', 'S'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(NVL(SUBSTRING(ofo.keycode, 9, 1), '1'), '[^[:alpha:]]') = 1)
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND NVL(SUBSTRING(ofo.keycode, 9, 1), 'X') NOT IN ('B', 'C', 'D', 'E', 'F', 'T'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND LENGTH(ofo.keycode) = 7 AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 6, 1), '[^[:alpha:]]') = 1)
+			) THEN 1
+	  END) shm_dm_ord_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'CNS'
+			AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+			AND (
+				(SUBSTRING(ofo.keycode, 1, 1) = 'E')  
+				OR(SUBSTRING(ofo.keycode, 1, 1) = 'D' AND SUBSTRING(ofo.keycode, 2, 1) = 'N')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND SUBSTRING(ofo.keycode, 9, 1) IN ('A', 'B', 'C', 'S'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 9, 1), '[[:alpha:]]') = 1)
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND SUBSTRING(ofo.keycode, 9, 1) IN ('B', 'C', 'D', 'E', 'F'))
+				OR (SUBSTRING(ofo.keycode, 4, 6) = 'FAILCC')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND LENGTH(ofo.keycode) = 7 AND SUBSTRING(ofo.keycode, 6, 1) IN ('A', 'B', 'C', 'D', 'E', 'F'))
+			) 
+		THEN 1
+	  END) cr_em_ord_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'CRH'
+			AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+			AND (
+				(SUBSTRING(ofo.keycode, 1, 1) = 'E')  
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND SUBSTRING(ofo.keycode, 2, 1) = 'N')  
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND SUBSTRING(ofo.keycode, 9, 1) IN ('A', 'B', 'C', 'S'))  
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 9, 1), '[[:alpha:]]') = 1)  
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND SUBSTRING(ofo.keycode, 9, 1) IN ('B', 'C', 'D', 'E', 'F'))  
+				OR (SUBSTRING(ofo.keycode, 4, 6) = 'FAILCC')  
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND LENGTH(ofo.keycode) = 7 AND SUBSTRING(ofo.keycode, 6, 1) IN ('A', 'B', 'C', 'D', 'E', 'F'))
+			)
+		THEN 1
+	  END) hl_em_ord_cnt
+	, COUNT(CASE
+		WHEN ofo.mag_cd = 'CRM'
+			AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+			AND (
+				(SUBSTRING(ofo.keycode, 1, 1) = 'E')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND SUBSTRING(ofo.keycode, 2, 1) = 'N')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND SUBSTRING(ofo.keycode, 9, 1) IN ('A', 'B', 'C', 'S'))
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 9, 1), '[[:alpha:]]') = 1)
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND SUBSTRING(ofo.keycode, 9, 1) IN ('B', 'C', 'D', 'E', 'F'))
+				OR (SUBSTRING(ofo.keycode, 4, 6) = 'FAILCC')
+				OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND LENGTH(ofo.keycode) = 7 AND SUBSTRING(ofo.keycode, 6, 1) IN ('A', 'B', 'C', 'D', 'E', 'F'))
+			) 
+		THEN 1
+	  END) ma_em_ord_cnt
+	, COUNT(CASE
+			WHEN ofo.mag_cd = 'SHM'
+				AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') --ddbarr
+				AND (
+					(SUBSTRING(ofo.keycode, 1, 1) = 'E')
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'D' AND SUBSTRING(ofo.keycode, 2, 1) = 'N')
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'B' AND SUBSTRING(ofo.keycode, 9, 1) IN ('A', 'B', 'C', 'S'))
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND REGEXP_INSTR(SUBSTRING(ofo.keycode, 9, 1), '[[:alpha:]]') = 1)
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'R' AND SUBSTRING(ofo.keycode, 9, 1) IN ('B', 'C', 'D', 'E', 'F'))
+					OR (SUBSTRING(ofo.keycode, 4, 6) = 'FAILCC')
+					OR (SUBSTRING(ofo.keycode, 1, 1) = 'U' AND LENGTH(ofo.keycode) = 7 AND SUBSTRING(ofo.keycode, 6, 1) IN ('A', 'B', 'C', 'D', 'E', 'F'))
+				)
+			THEN 1
+	  END) shm_em_ord_cnt
+	, COUNT(CASE WHEN ofo.set_cd IN ('B', 'D') AND ofo.mag_cd = 'CNS' THEN 1 END) cr_dnr_ord_cnt
+	, COUNT(CASE WHEN ofo.set_cd IN ('B', 'D') AND ofo.mag_cd = 'CRH' THEN 1 END) hl_dnr_ord_cnt
+	, COUNT(CASE WHEN ofo.set_cd IN ('B', 'D') AND ofo.mag_cd = 'CRM' THEN 1 END) ma_dnr_ord_cnt
+	, COUNT(CASE WHEN ofo.set_cd IN ('B', 'D') AND ofo.mag_cd = 'SHM' THEN 1 END) shm_dnr_ord_cnt
+	, COUNT(CASE WHEN ofo.mag_cd = 'CNS' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) cr_ord_cnt
+	, COUNT(CASE WHEN ofo.mag_cd = 'CRH' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) hl_ord_cnt
+	, COUNT(CASE WHEN ofo.mag_cd = 'CRM' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) ma_ord_cnt
+	, COUNT(CASE WHEN ofo.mag_cd = 'SHM' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) shm_ord_cnt
+	, COUNT(CASE WHEN ofo.cr_stat_cd IN ('B', 'J') AND ofo.mag_cd = 'CNS' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) cr_wr_off_cnt
+	, COUNT(CASE WHEN ofo.cr_stat_cd IN ('B', 'J') AND ofo.mag_cd = 'CRH' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) hl_wr_off_cnt
+	, COUNT(CASE WHEN ofo.cr_stat_cd IN ('B', 'J') AND ofo.mag_cd = 'CRM' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) ma_wr_off_cnt
+	, COUNT(CASE WHEN ofo.cr_stat_cd IN ('B', 'J') AND ofo.mag_cd = 'SHM' AND NVL(ofo.set_cd, 'X') NOT IN ('C', 'E') THEN 1 END) shm_wr_off_cnt
+FROM
+	prod.agg_print_order ofo
+WHERE
+	mag_cd IN ('CNS', 'CRH', 'CRM', 'SHM')
+	AND (keycode NOT IN ('VFREE', 'ZFREE') OR keycode IS NULL)
+GROUP BY
+	individual_id;
+
+
+/*** offline_ord_tmp3 TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.offline_ord_tmp3;
+
+CREATE TABLE agg.offline_ord_tmp3
+	DISTSTYLE KEY
+	DISTKEY(acct_id)
+	COMPOUND SORTKEY(acct_id, ord_id)
+AS
+	SELECT
+		  acct_id
+		, ord_id
+		, set_cd
+		, ord_dt
+		, mag_cd
+		, canc_dt
+		, canc_rsn_cd
+		, orig_strt_iss_num
+		, term_mth_cnt
+		, keycode
+		, stat_cd
+		, src_cd
+		, pmt_dt
+		, cr_stat_cd
+		, entr_typ_cd
+	FROM
+		prod.agg_print_order
+	WHERE
+		keycode IS NULL OR keycode NOT IN ('VFREE', 'ZFREE');
+
+
+/*** offline_account_tmp4 TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.offline_account_tmp4;
+
+CREATE TABLE agg.offline_account_tmp4 
+	DISTSTYLE KEY 
+	DISTKEY(acct_id)
+	SORTKEY(acct_id)
+AS
+	SELECT
+		  svc_status_code svc_stat_cd
+		, acct.source_account_id acct_id
+		--, hash_account_id
+		, magazine_code mag_cd
+		, keycode keycd
+		, renewal_cnt rnw_cnt
+		, expr_iss_num
+	FROM
+		prod.print_account_detail ad
+		JOIN prod.account acct ON acct.hash_account_id = ad.hash_account_id
+	WHERE
+		NVL(magazine_code, 'XXX') IN ('CNS', 'CRH', 'CRM', 'SHM', 'CRT', 'XXX');
+
+
+/*** ofl_sum_oca_temp TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.ofl_sum_oca_temp;
+
+CREATE TABLE agg.ofl_sum_oca_temp
+	DISTSTYLE EVEN 
+	SORTKEY(acct_id, ord_id)
+AS
+SELECT
+	  ah.source_account_id acct_id
+	, ah.action_id ord_id
+	, pc.cancel_reason_code canc_rsn_cd
+FROM
+	prod.action_header ah 
+	JOIN prod.print_cancel pc ON ah.hash_action_id = pc.hash_action_id;
+
+
+/*** ofl_sum_temp TEMP POPULATION***/
+DROP TABLE IF EXISTS agg.ofl_sum_temp;
+
+CREATE TABLE agg.ofl_sum_temp
+	DISTSTYLE KEY 
+	DISTKEY(individual_id)
+	SORTKEY(individual_id)
+AS
+  SELECT er.individual_id,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_actv_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_actv_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_actv_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd IN ('A', 'E') AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_actv_rptg_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd IN ('A', 'E') AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_actv_rptg_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd IN ('A', 'E') AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_actv_rptg_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     ofo.set_cd IN ('A', 'B') AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     ofo.cr_stat_cd IN ('C', 'D', 'E', 'F',
+                                         'G', 'I') AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_actv_pd_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     ofo.set_cd IN ('A', 'B') AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     ofo.cr_stat_cd IN ('C', 'D', 'E', 'F',
+                                         'G', 'I') AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_actv_pd_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     ofo.set_cd IN ('A', 'B') AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     ofo.cr_stat_cd IN ('C', 'D', 'E', 'F',
+                                         'G', 'I') AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_actv_pd_flg,
+		CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN oa.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                               ELSE NULL
+                             END), 9) IN ('06', '50') THEN 'Y'
+           ELSE 'N'
+         END                                        cr_canc_bad_dbt_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN oa.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                               ELSE NULL
+                             END), 9) IN ('06', '50') THEN 'Y'
+           ELSE 'N'
+         END                                        hl_canc_bad_dbt_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN oa.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                               ELSE NULL
+                             END), 9) IN ('06', '50') THEN 'Y'
+           ELSE 'N'
+         END                                        ma_canc_bad_dbt_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN oa.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                               ELSE NULL
+                             END), 9) NOT IN ('06', '14', '50') THEN 'Y'
+           ELSE 'N'
+         END                                        cr_canc_cust_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN oa.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                               ELSE NULL
+                             END), 9) NOT IN ('06', '14', '50') THEN 'Y'
+           ELSE 'N'
+         END                                        hl_canc_cust_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN oa.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                               ELSE NULL
+                             END), 9) NOT IN ('06', '14', '50') THEN 'Y'
+           ELSE 'N'
+         END                                        ma_canc_cust_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd = 'E' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_crd_pend_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd = 'E' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_crd_pend_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd = 'E' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_crd_pend_flg,
+         DECODE(SUBSTRING(MAX(CASE
+                                WHEN oa.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.cr_stat_cd
+                                ELSE NULL
+                              END), 9), 'C', 'P',
+                                          'D', 'P',
+                                          'E', 'P',
+                                          'F', 'P',
+                                          'G', 'P',
+                                          'I', 'P',
+                                          'A', 'U',
+                                          'H', 'U',
+                                          'B', 'W',
+                                          'J', 'W',
+                                          NULL)    cr_crd_stat_cd,
+         DECODE(SUBSTRING(MAX(CASE
+                                WHEN oa.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.cr_stat_cd
+                                ELSE NULL
+                              END), 9), 'C', 'P',
+                                          'D', 'P',
+                                          'E', 'P',
+                                          'F', 'P',
+                                          'G', 'P',
+                                          'I', 'P',
+                                          'A', 'U',
+                                          'H', 'U',
+                                          'B', 'W',
+                                          'J', 'W',
+                                          NULL)    hl_crd_stat_cd,
+         DECODE(SUBSTRING(MAX(CASE
+                                WHEN oa.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.cr_stat_cd
+                                ELSE NULL
+                              END), 9), 'C', 'P',
+                                          'D', 'P',
+                                          'E', 'P',
+                                          'F', 'P',
+                                          'G', 'P',
+                                          'I', 'P',
+                                          'A', 'U',
+                                          'H', 'U',
+                                          'B', 'W',
+                                          'J', 'W',
+                                          NULL)    ma_crd_stat_cd,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' THEN iss.pub_date
+                WHEN de.mag_cd = 'CNS' THEN de.exp_dt
+                ELSE NULL
+              END)                                 cr_exp_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' THEN iss.pub_date
+                WHEN de.mag_cd = 'CRH' THEN de.exp_dt
+                ELSE NULL
+              END)                                 hl_exp_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' THEN iss.pub_date
+                ELSE NULL
+              END)                                 ma_exp_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND
+                     ofo.mag_cd = 'CNS' THEN ofo.canc_dt
+              END)                                 cr_lst_canc_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND
+                     ofo.mag_cd = 'CRH' THEN ofo.canc_dt
+              END)                                 hl_lst_canc_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND
+                     ofo.mag_cd = 'CRM' THEN ofo.canc_dt
+              END)                                 ma_lst_canc_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRT' THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 tl_lst_ord_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' THEN ofo.pmt_dt
+                ELSE NULL
+              END)                                 cr_lst_pmt_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' THEN ofo.pmt_dt
+                ELSE NULL
+              END)                                 hl_lst_pmt_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' THEN ofo.pmt_dt
+                ELSE NULL
+              END)                                 ma_lst_pmt_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' THEN 'Y'
+                WHEN de.mag_cd = 'CNS' THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' THEN 'Y'
+                WHEN de.mag_cd = 'CRH' THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_flg,
+         CASE
+           WHEN MAX(CASE
+                       WHEN oa.mag_cd = 'CNS' AND
+                            oa.svc_stat_cd = 'C' AND
+                            oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                       ELSE 'N'
+                     END) = 'Y' THEN 'Y'
+           WHEN MAX(CASE
+                       WHEN oa.mag_cd = 'CNS' THEN '2'
+                       WHEN de.mag_cd = 'CNS' THEN '1'
+                     END) = '1' THEN 'Y'
+           ELSE 'N'
+         END                                        cr_exp_flg,
+         CASE
+           WHEN MAX(CASE
+                       WHEN oa.mag_cd = 'CRH' AND
+                            oa.svc_stat_cd = 'C' AND
+                            oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                       ELSE 'N'
+                     END) = 'Y' THEN 'Y'
+           WHEN MAX(CASE
+                       WHEN oa.mag_cd = 'CRH' THEN '2'
+                       WHEN de.mag_cd = 'CRH' THEN '1'
+                     END) = '1' THEN 'Y'
+           ELSE 'N'
+         END                                        hl_exp_flg,
+         CASE
+           WHEN MAX(CASE
+                       WHEN oa.mag_cd = 'CRM' AND
+                            oa.svc_stat_cd = 'C' AND
+                            oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                       ELSE 'N'
+                     END) = 'Y' THEN 'Y'
+           ELSE 'N'
+         END                                        ma_exp_flg,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.cr_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                      END), 9)                    cr_curr_ord_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.hl_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                      END), 9)                    hl_curr_ord_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.ma_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                      END), 9)                    ma_curr_ord_keycode,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    cr_fst_mbr_keycode,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    hl_fst_mbr_keycode,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    ma_fst_mbr_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    cr_lst_ord_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    hl_lst_ord_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    ma_lst_ord_keycode,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     SUBSTRING(ofo.keycode, 1, 4) = 'LIFE' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_lt_sub_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     SUBSTRING(ofo.keycode, 1, 4) = 'LIFE' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_lt_sub_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     SUBSTRING(ofo.keycode, 1, 4) = 'LIFE' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_lt_sub_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd = 'D' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_non_sub_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd = 'D' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_non_sub_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd = 'D' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_non_sub_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.set_cd IN ('C', 'E') AND
+                     ofo.stat_cd = 'B' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_rec_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.set_cd IN ('C', 'E') AND
+                     ofo.stat_cd = 'B' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_rec_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.set_cd IN ('C', 'E') AND
+                     ofo.stat_cd = 'B' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_rec_flg,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             oa.acct_id = ct.cr_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oa.svc_stat_cd
+                        WHEN de.mag_cd = 'CNS' THEN '-1000000' || 'C'
+                      END), 9)                    cr_svc_stat_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             oa.acct_id = ct.hl_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oa.svc_stat_cd
+                        WHEN de.mag_cd = 'CRH' THEN '-1000000' || 'C'
+                      END), 9)                    hl_svc_stat_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             oa.acct_id = ct.ma_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oa.svc_stat_cd
+                      END), 9)                    ma_svc_stat_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.cr_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                                         'BA', '2',
+                                                                                         'BB', '3',
+                                                                                         'BE', '4',
+                                                                                         'BF', '5',
+                                                                                         'BH', '6',
+                                                                                         'CA', '7',
+                                                                                         'CC', '7',
+                                                                                         SUBSTRING(ofo.keycode, 1, 1))
+                      END), 9)                    cr_curr_ord_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.hl_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                                         'BA', '2',
+                                                                                         'BB', '3',
+                                                                                         'BE', '4',
+                                                                                         'BF', '5',
+                                                                                         'BH', '6',
+                                                                                         'CA', '7',
+                                                                                         'CC', '7',
+                                                                                         SUBSTRING(ofo.keycode, 1, 1))
+                      END), 9)                    hl_curr_ord_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.ma_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                                         'BA', '2',
+                                                                                         'BB', '3',
+                                                                                         'BE', '4',
+                                                                                         'BF', '5',
+                                                                                         'BH', '6',
+                                                                                         'CA', '7',
+                                                                                         'CC', '7',
+                                                                                         SUBSTRING(ofo.keycode, 1, 1))
+                      END), 9)                    ma_curr_ord_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                           'BA', '2',
+                                                                           'BB', '3',
+                                                                           'BE', '4',
+                                                                           'BF', '5',
+                                                                           'BH', '6',
+                                                                           'CA', '7',
+                                                                           'CC', '7',
+                                                                           SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    cr_fst_ord_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                           'BA', '2',
+                                                                           'BB', '3',
+                                                                           'BE', '4',
+                                                                           'BF', '5',
+                                                                           'BH', '6',
+                                                                           'CA', '7',
+                                                                           'CC', '7',
+                                                                           SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    hl_fst_ord_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                           'BA', '2',
+                                                                           'BB', '3',
+                                                                           'BE', '4',
+                                                                           'BF', '5',
+                                                                           'BH', '6',
+                                                                           'CA', '7',
+                                                                           'CC', '7',
+                                                                           SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    ma_fst_ord_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                           'BA', '2',
+                                                                           'BB', '3',
+                                                                           'BE', '4',
+                                                                           'BF', '5',
+                                                                           'BH', '6',
+                                                                           'CA', '7',
+                                                                           'CC', '7',
+                                                                           SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    cr_lst_ord_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                           'BA', '2',
+                                                                           'BB', '3',
+                                                                           'BE', '4',
+                                                                           'BF', '5',
+                                                                           'BH', '6',
+                                                                           'CA', '7',
+                                                                           'CC', '7',
+                                                                           SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    hl_lst_ord_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                           'BA', '2',
+                                                                           'BB', '3',
+                                                                           'BE', '4',
+                                                                           'BF', '5',
+                                                                           'BH', '6',
+                                                                           'CA', '7',
+                                                                           'CC', '7',
+                                                                           SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    ma_lst_ord_src_cd,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd != 'D' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_sub_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd != 'D' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_sub_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd != 'D' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_sub_dnr_flg,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.cr_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.term_mth_cnt
+                      END), 9)                    cr_curr_ord_term,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.hl_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.term_mth_cnt
+                      END), 9)                    hl_curr_ord_term,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.ma_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.term_mth_cnt
+                      END), 9)                    ma_curr_ord_term,
+         MIN(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     ofo.set_cd IN ('B', 'D') THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 cr_fst_dnr_dt,
+         MIN(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     ofo.set_cd IN ('B', 'D') THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 hl_fst_dnr_dt,
+         MIN(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     ofo.set_cd IN ('B', 'D') THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 ma_fst_dnr_dt,
+         MAX(CASE
+                WHEN de.mag_cd = 'CNS' THEN de.eds_lst_src_cd
+                ELSE NULL
+              END)                                 eds_lst_src_cd,
+         MAX(CASE
+                WHEN de.mag_cd = 'CNS' THEN de.morbank_mtch_cd
+                ELSE NULL
+              END)                                 morbank_mtch_cd,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd = 'A' AND
+                     SUBSTRING(oa.keycd, 1, 4) = 'AUTO' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_auto_rnw_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd = 'A' AND
+                     SUBSTRING(oa.keycd, 1, 4) = 'AUTO' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_auto_rnw_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     SUBSTRING(oa.keycd, 1, 4) = 'AUTO' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_auto_rnw_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     (ofo.set_cd IN ('A', 'C', 'E')  OR
+                       (ofo.set_cd IN ('B', 'D') AND
+                         ofo.stat_cd NOT IN ('D'))) THEN 'Y'
+                ELSE 'N'
+              END)                                 cr_non_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     (ofo.set_cd IN ('A', 'C', 'E')  OR
+                       (ofo.set_cd IN ('B', 'D') AND
+                         ofo.stat_cd NOT IN ('D'))) THEN 'Y'
+                ELSE 'N'
+              END)                                 hl_non_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     (ofo.set_cd IN ('A', 'C', 'E')  OR
+                       (ofo.set_cd IN ('B', 'D') AND
+                         ofo.stat_cd NOT IN ('D'))) THEN 'Y'
+                ELSE 'N'
+              END)                                 ma_non_dnr_flg,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_cro_brk_dt, STRPOS(obt.last_cro_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num ) AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    cr_curr_mbr_keycode,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_hl_brk_dt, STRPOS(obt.last_hl_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    hl_curr_mbr_keycode,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_ma_brk_dt, STRPOS(obt.last_ma_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9)                    ma_curr_mbr_keycode,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     (ofo.set_cd NOT IN('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN obt.cro_brks_cnt
+                ELSE NULL
+              END)                                 cro_brks_cnt,
+         MAX(CASE
+                WHEN de_cnt.magazine_code = 'CNS' THEN de_cnt.de_cr_brks_cnt
+                ELSE NULL
+              END)                                 de_cro_brks_cnt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     (ofo.set_cd NOT IN('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN obt.hl_brks_cnt
+                ELSE NULL
+              END)                                 hl_brks_cnt,
+         MAX(CASE
+                WHEN de_cnt.magazine_code = 'CRH' THEN de_cnt.de_hl_brks_cnt
+                ELSE NULL
+              END)                                 de_hl_brks_cnt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     (ofo.set_cd NOT IN('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN obt.ma_brks_cnt
+                ELSE NULL
+              END)                                 ma_brks_cnt,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_cro_brk_dt, STRPOS(obt.last_cro_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                                        'BA', '2',
+                                                                                        'BB', '3',
+                                                                                        'BE', '4',
+                                                                                        'BF', '5',
+                                                                                        'BH', '6',
+                                                                                        'CA', '7',
+                                                                                        'CC', '7',
+                                                                                        SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    cr_curr_mbr_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_hl_brk_dt, STRPOS(obt.last_hl_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                                                                        'BA', '2',
+                                                                                        'BB', '3',
+                                                                                        'BE', '4',
+                                                                                        'BF', '5',
+                                                                                        'BH', '6',
+                                                                                        'CA', '7',
+                                                                                        'CC', '7',
+                                                                                        SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    hl_curr_mbr_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_ma_brk_dt, STRPOS(obt.last_ma_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    ma_curr_mbr_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) AND
+                             cro_brks_cnt = 1 AND
+                             ofo.orig_strt_iss_num &gt;= obt.cns_orig_strt_iss_num AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_cro_brk_dt, STRPOS(obt.last_cro_brk_dt, '|') + 1) AS INTEGER) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        WHEN oa.mag_cd = 'CNS' AND
+                             cro_brks_cnt &gt; 1 AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_cro_brk_dt, STRPOS(obt.last_cro_brk_dt, '|') + 1) AS INTEGER) AND
+                             ofo.orig_strt_iss_num &gt;= CAST(SUBSTRING(obt.prior_cro_brk_dt, STRPOS(obt.prior_cro_brk_dt, '|') + 1) AS INTEGER) AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9)                    cr_prior_mbr_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) AND
+                             hl_brks_cnt = 1 AND
+                             ofo.orig_strt_iss_num &gt;= obt.crh_orig_strt_iss_num AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_hl_brk_dt, STRPOS(obt.last_hl_brk_dt, '|') + 1) AS INTEGER) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        WHEN oa.mag_cd = 'CRH' AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) AND
+                             hl_brks_cnt &gt; 1 AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_hl_brk_dt, STRPOS(obt.last_hl_brk_dt, '|') + 1) AS INTEGER) AND
+                             ofo.orig_strt_iss_num &gt;= CAST(SUBSTRING(obt.prior_hl_brk_dt, STRPOS(obt.prior_hl_brk_dt, '|') + 1) AS INTEGER) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9) hl_prior_mbr_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) AND
+                             ma_brks_cnt = 1 AND
+                             ofo.orig_strt_iss_num &gt;= obt.crm_orig_strt_iss_num AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_ma_brk_dt, STRPOS(obt.last_ma_brk_dt, '|') + 1) AS INTEGER) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        WHEN oa.mag_cd = 'CRM' AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) AND
+                             ma_brks_cnt &gt; 1 AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_ma_brk_dt, STRPOS(obt.last_ma_brk_dt, '|') + 1) AS INTEGER) AND
+                             ofo.orig_strt_iss_num &gt;= CAST(SUBSTRING(obt.prior_ma_brk_dt, STRPOS(obt.prior_ma_brk_dt, '|') + 1) AS INTEGER) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9) ma_prior_mbr_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CNS' AND
+                             oa.svc_stat_cd &lt;&gt; 'D' THEN Lpad(oa.expr_iss_num, 5, 0) ||oa.rnw_cnt
+                      END), 6)                    cr_rnw_cnt,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRH' AND
+                             oa.svc_stat_cd &lt;&gt; 'D' THEN Lpad(oa.expr_iss_num, 5, 0) ||oa.rnw_cnt
+                      END), 6)                    hl_rnw_cnt,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'CRM' AND
+                             oa.svc_stat_cd &lt;&gt; 'D' THEN Lpad(oa.expr_iss_num, 5, 0) ||oa.rnw_cnt
+                      END), 6)                    ma_rnw_cnt,
+         MIN(CASE
+                WHEN oa.mag_cd = 'CNS' AND
+                     ofo.orig_strt_iss_num &gt; 0 AND
+                     ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_cro_brk_dt, STRPOS(obt.last_cro_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                     (NVL(ofo.set_cd, 'Z') NOT IN ('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 cr_curr_mbr_dt,-- mribbi 11/06/2006
+         MIN(CASE
+                WHEN oa.mag_cd = 'CRH' AND
+                     ofo.orig_strt_iss_num &gt; 0 AND
+                     ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_hl_brk_dt, STRPOS(obt.last_hl_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                     (NVL(ofo.set_cd, 'Z') NOT IN ('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 hl_curr_mbr_dt,-- mribbi 11/06/2006
+         MIN(CASE
+                WHEN oa.mag_cd = 'CRM' AND
+                     ofo.orig_strt_iss_num &gt; 0 AND
+                     ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_ma_brk_dt, STRPOS(obt.last_ma_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                     (NVL(ofo.set_cd, 'Z') NOT IN ('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN ofo.ord_dt
+                ELSE NULL
+              END)                                 ma_curr_mbr_dt,-- mribbi 11/06/2006
+         NVL(MAX(ofo2.cr_ltd_pd_amt), 0)        cr_ltd_pd_amt,
+         NVL(MAX(ofo2.hl_ltd_pd_amt), 0)        hl_ltd_pd_amt,
+         NVL(MAX(ofo2.ma_ltd_pd_amt), 0)        ma_ltd_pd_amt,
+         MAX(CASE
+                WHEN ofo.stat_cd = 'B' AND
+                     oa.mag_cd = 'CNS' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.cr_comb_acct_id THEN ofo.ord_dt
+              END)                                 cr_curr_ord_dt,
+         MAX(CASE
+                WHEN ofo.stat_cd = 'B' AND
+                     oa.mag_cd = 'CRH' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.hl_comb_acct_id THEN ofo.ord_dt
+              END)                                 hl_curr_ord_dt,
+         MAX(CASE
+                WHEN ofo.stat_cd = 'B' AND
+                     oa.mag_cd = 'CRM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.ma_comb_acct_id THEN ofo.ord_dt
+              END)                                 ma_curr_ord_dt,
+         MIN(CASE
+                WHEN ofo.mag_cd = 'CNS' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END)                                 cr_fst_ord_dt,
+         MIN(CASE
+                WHEN ofo.mag_cd = 'CRH' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END)                                 hl_fst_ord_dt,
+         MIN(CASE
+                WHEN ofo.mag_cd = 'CRM' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END)                                 ma_fst_ord_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd IN ('06', '50') AND
+                     ofo.mag_cd = 'CNS' THEN ofo.canc_dt
+              END)                                 cr_lst_canc_bad_dbt_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd IN ('06', '50') AND
+                     ofo.mag_cd = 'CRH' THEN ofo.canc_dt
+              END)                                 hl_lst_canc_bad_dbt_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd IN ('06', '50') AND
+                     ofo.mag_cd = 'CRM' THEN ofo.canc_dt
+              END)                                 ma_lst_canc_bad_dbt_dt,
+         MAX(CASE
+                WHEN ofo.set_cd IN ('B', 'D') AND
+                     ofo.mag_cd = 'CNS' THEN ofo.ord_dt
+              END)                                 cr_lst_dnr_ord_dt,
+         MAX(CASE
+                WHEN ofo.set_cd IN ('B', 'D') AND
+                     ofo.mag_cd = 'CRH' THEN ofo.ord_dt
+              END)                                 hl_lst_dnr_ord_dt,
+         MAX(CASE
+                WHEN ofo.set_cd IN ('B', 'D') AND
+                     ofo.mag_cd = 'CRM' THEN ofo.ord_dt
+              END)                                 ma_lst_dnr_ord_dt,
+         MAX(CASE
+                WHEN ofo.mag_cd = 'CNS' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END)                                 cr_lst_ord_dt,
+         MAX(CASE
+                WHEN ofo.mag_cd = 'CRH' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END)                                 hl_lst_ord_dt,
+         MAX(CASE
+                WHEN ofo.mag_cd = 'CRM' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END)                                 ma_lst_ord_dt,
+         NVL(MAX(ofo2.cr_canc_bad_dbt_cnt), 0)  cr_canc_bad_dbt_cnt,
+         NVL(MAX(ofo2.hl_canc_bad_dbt_cnt), 0)  hl_canc_bad_dbt_cnt,
+         NVL(MAX(ofo2.ma_canc_bad_dbt_cnt), 0)  ma_canc_bad_dbt_cnt,
+         NVL(MAX(ofo2.cr_canc_cust_cnt), 0)     cr_canc_cust_cnt,
+         NVL(MAX(ofo2.hl_canc_cust_cnt), 0)     hl_canc_cust_cnt,
+         NVL(MAX(ofo2.ma_canc_cust_cnt), 0)     ma_canc_cust_cnt,
+         NVL(MAX(ofo2.cr_dm_ord_cnt), 0)        cr_dm_ord_cnt,
+         NVL(MAX(ofo2.hl_dm_ord_cnt), 0)        hl_dm_ord_cnt,
+         NVL(MAX(ofo2.ma_dm_ord_cnt), 0)        ma_dm_ord_cnt,
+         NVL(MAX(ofo2.cr_em_ord_cnt), 0)        cr_em_ord_cnt,
+         NVL(MAX(ofo2.hl_em_ord_cnt), 0)        hl_em_ord_cnt,
+         NVL(MAX(ofo2.ma_em_ord_cnt), 0)        ma_em_ord_cnt,
+         NVL(MAX(ofo2.cr_dnr_ord_cnt), 0)       cr_dnr_ord_cnt,
+         NVL(MAX(ofo2.hl_dnr_ord_cnt), 0)       hl_dnr_ord_cnt,
+         NVL(MAX(ofo2.ma_dnr_ord_cnt), 0)       ma_dnr_ord_cnt,
+         NVL(MAX(ofo2.cr_ord_cnt), 0)           cr_ord_cnt,
+         NVL(MAX(ofo2.hl_ord_cnt), 0)           hl_ord_cnt,
+         NVL(MAX(ofo2.ma_ord_cnt), 0)           ma_ord_cnt,
+         NVL(MAX(ofo2.cr_wr_off_cnt), 0)        cr_wr_off_cnt,
+         NVL(MAX(ofo2.hl_wr_off_cnt), 0)        hl_wr_off_cnt,
+         NVL(MAX(ofo2.ma_wr_off_cnt), 0)        ma_wr_off_cnt,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) IN ('C', 'E') THEN 'R'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) = 'A' THEN 'O'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || NVL(ofo.set_cd, 'X') || oa.svc_stat_cd
+				END), 9) IN ('BD', 'DD') THEN 'N'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CNS' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) IN ('B', 'D') THEN 'D'
+         END cr_lst_sub_ord_role_cd,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+                END), 9) IN ('C', 'E') THEN 'R'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) = 'A' THEN 'O'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || NVL(ofo.set_cd, 'X') || oa.svc_stat_cd
+				END), 9) IN ('BD', 'DD') THEN 'N'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRH' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) IN ('B', 'D') THEN 'D'
+         END hl_lst_sub_ord_role_cd,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) IN ('C', 'E') THEN 'R'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) = 'A' THEN 'O'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd || oa.svc_stat_cd
+				END), 9) IN ('BD', 'DD') THEN 'N'
+           WHEN SUBSTRING(MAX(CASE
+                WHEN ofo.mag_cd = 'CRM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+				END), 9) IN ('B', 'D') THEN 'D'
+         END ma_lst_sub_ord_role_cd,
+         NVL(MAX(ofo2.shm_ltd_pd_amt), 0)       shm_ltd_pd_amt,
+         NVL(MAX(ofo2.shm_canc_bad_dbt_cnt), 0) shm_canc_bad_dbt_cnt,
+         NVL(MAX(ofo2.shm_canc_cust_cnt), 0)    shm_canc_cust_cnt,
+         NVL(MAX(ofo2.shm_dm_ord_cnt), 0)       shm_dm_ord_cnt,
+         NVL(MAX(ofo2.shm_em_ord_cnt), 0)       shm_em_ord_cnt,
+         NVL(MAX(ofo2.shm_dnr_ord_cnt), 0)      shm_dnr_ord_cnt,
+         NVL(MAX(ofo2.shm_ord_cnt), 0)          shm_ord_cnt,
+         NVL(MAX(ofo2.shm_wr_off_cnt), 0)       shm_wr_off_cnt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_actv_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd IN ('A', 'E') AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_actv_rptg_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.entr_typ_cd != 'F' AND
+                     ofo.stat_cd = 'B' AND
+                     ofo.set_cd IN ('A', 'B') AND
+                     (ofo.src_cd NOT IN ('CA', 'CC')  OR
+                       (SUBSTRING(ofo.keycode, 1, 4) = 'LIFE')) AND
+                     ofo.cr_stat_cd IN ('C', 'D', 'E', 'F', 'G', 'I') AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_actv_pd_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                WHEN oa.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                    ELSE NULL
+                END), 9) IN ('06', '50') THEN 'Y'
+           ELSE 'N'
+         END shm_canc_bad_dbt_flg,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                WHEN oa.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oca.canc_rsn_cd
+                    ELSE NULL
+                END), 9) NOT IN ('06', '14', '50') THEN 'Y'
+           ELSE 'N'
+         END shm_canc_cust_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd = 'E' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_crd_pend_flg,
+         DECODE(SUBSTRING(MAX(CASE
+                WHEN oa.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.cr_stat_cd
+                ELSE NULL END), 9), 'C', 'P', 'D', 'P', 'E', 'P', 'F', 'P', 'G', 'P', 'I', 'P', 'A', 'U', 'H', 'U', 'B', 'W', 'J', 'W', NULL) shm_crd_stat_cd,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' THEN iss.pub_date
+                ELSE NULL
+              END) shm_exp_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd NOT IN ('06', '14', '50') AND
+                     ofo.mag_cd = 'SHM' THEN ofo.canc_dt
+              END)                                 shm_lst_canc_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' THEN ofo.pmt_dt
+                ELSE NULL
+              END) shm_lst_pmt_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' THEN 'Y'
+                ELSE 'N'
+              END) shm_flg,
+         CASE
+           WHEN MAX(CASE
+                       WHEN oa.mag_cd = 'SHM' AND
+                            oa.svc_stat_cd = 'C' AND
+                            oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                       ELSE 'N'
+                     END) = 'Y' THEN 'Y'
+           ELSE 'N'
+         END shm_exp_flg,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_shm_brk_dt, STRPOS(obt.last_shm_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9) shm_curr_mbr_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.shm_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                      END), 9) shm_curr_ord_keycode,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             (ofo.set_cd NOT IN('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '99999999') || ofo.keycode
+                        ELSE NULL
+                      END), 9) shm_fst_mbr_keycode,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' THEN NVL(TO_CHAR(ord_dt, 'YYYYMMDD'), '00000000') || ofo.keycode
+                        ELSE NULL
+                      END), 9) shm_lst_ord_keycode,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     SUBSTRING(ofo.keycode, 1, 4) = 'LIFE' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_lt_sub_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd = 'D' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_non_sub_dnr_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     (ofo.set_cd NOT IN('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN obt.shm_brks_cnt
+                ELSE NULL
+              END) shm_brks_cnt,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             oa.svc_stat_cd &lt;&gt; 'D' THEN Lpad(oa.expr_iss_num, 5, 0) ||oa.rnw_cnt
+                      END), 6) shm_rnw_cnt,
+-- last
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     ofo.set_cd IN ('C', 'E') AND
+                     ofo.stat_cd = 'B' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_rec_flg,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             oa.acct_id = ct.shm_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || oa.svc_stat_cd
+                      END), 9) shm_svc_stat_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             ofo.orig_strt_iss_num &gt; 0 AND
+                             ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_shm_brk_dt, STRPOS(obt.last_shm_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                    'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9) shm_curr_mbr_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.shm_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                      END), 9) shm_curr_ord_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9) shm_fst_ord_src_cd,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9) shm_lst_ord_src_cd,
+         SUBSTRING(MIN(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             ofo.set_cd NOT IN ('B', 'D') AND
+                             shm_brks_cnt = 1 AND
+                             ofo.orig_strt_iss_num &gt;= obt.shm_orig_strt_iss_num AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_shm_brk_dt, STRPOS(obt.last_shm_brk_dt, '|') + 1) AS INTEGER) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        WHEN oa.mag_cd = 'SHM' AND
+                             shm_brks_cnt &gt; 1 AND
+                             ofo.orig_strt_iss_num &lt; CAST(SUBSTRING(obt.last_shm_brk_dt, STRPOS(obt.last_shm_brk_dt, '|') + 1) AS INTEGER) AND
+                             ofo.orig_strt_iss_num &gt;= CAST(SUBSTRING(obt.prior_shm_brk_dt, STRPOS(obt.prior_shm_brk_dt, '|') + 1) AS INTEGER) AND
+                             (ofo.set_cd NOT IN ('B', 'D')  OR
+                               ofo.stat_cd NOT IN ('D')) THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '99999999') || DECODE(ofo.src_cd, 'AF', '1',
+                                'BA', '2', 'BB', '3', 'BE', '4', 'BF', '5', 'BH', '6', 'CA', '7', 'CC', '7', SUBSTRING(ofo.keycode, 1, 1))
+                        ELSE NULL
+                      END), 9) shm_prior_mbr_src_cd,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     ofo.set_cd IN ('B', 'D') AND
+                     ofo.ord_dt &gt; ADD_MONTHS(SYSDATE, -12) AND
+                     oa.svc_stat_cd != 'D' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_sub_dnr_flg,
+         SUBSTRING(MAX(CASE
+                        WHEN oa.mag_cd = 'SHM' AND
+                             ofo.stat_cd = 'B' AND
+                             oa.svc_stat_cd = 'A' AND
+                             oa.acct_id = ct.shm_comb_acct_id THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.term_mth_cnt
+                      END), 9) shm_curr_ord_term,
+-- last
+         MIN(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     ofo.set_cd IN ('B', 'D') THEN ofo.ord_dt
+                ELSE NULL
+              END) shm_fst_dnr_dt,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     SUBSTRING(oa.keycd, 1, 4) = 'AUTO' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN 'Y'
+                ELSE 'N'
+              END) shm_auto_rnw_flg,
+         MAX(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     (ofo.set_cd IN ('A', 'C', 'E')  OR
+                       (ofo.set_cd IN ('B', 'D') AND
+                         ofo.stat_cd NOT IN ('D'))) THEN 'Y'
+                ELSE 'N'
+              END) shm_non_dnr_flg,
+         MIN(CASE
+                WHEN oa.mag_cd = 'SHM' AND
+                     ofo.orig_strt_iss_num &gt; 0 AND
+                     ofo.orig_strt_iss_num &gt;= NVL(CAST(SUBSTRING(obt.last_shm_brk_dt, STRPOS(obt.last_shm_brk_dt, '|') + 1) AS INTEGER), ofo.orig_strt_iss_num) AND
+                     (NVL(ofo.set_cd, 'Z') NOT IN ('B', 'D')  OR
+                       ofo.stat_cd NOT IN ('D')) THEN ofo.ord_dt
+                ELSE NULL
+              END) shm_curr_mbr_dt,
+         MAX(CASE
+                WHEN ofo.stat_cd = 'B' AND
+                     oa.mag_cd = 'SHM' AND
+                     oa.svc_stat_cd = 'A' AND
+                     oa.acct_id = ct.shm_comb_acct_id THEN ofo.ord_dt
+              END) shm_curr_ord_dt,
+         MIN(CASE
+                WHEN ofo.mag_cd = 'SHM' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END) shm_fst_ord_dt,
+         MAX(CASE
+                WHEN ofo.canc_rsn_cd IN ('06', '50') AND
+                     ofo.mag_cd = 'SHM' THEN ofo.canc_dt
+              END) shm_lst_canc_bad_dbt_dt,
+         MAX(CASE
+                WHEN ofo.set_cd IN ('B', 'D') AND
+                     ofo.mag_cd = 'SHM' THEN ofo.ord_dt
+              END) shm_lst_dnr_ord_dt,
+         MAX(CASE
+                WHEN ofo.mag_cd = 'SHM' --ddbarr NVL(ofo.set_cd,'X') not in ('C','E')
+              THEN ofo.ord_dt
+              END) shm_lst_ord_dt,
+         CASE
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN ofo.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+                             END), 9) IN ('C', 'E') THEN 'R'
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN ofo.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+                             END), 9) = 'A' THEN 'O'
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN ofo.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || NVL(ofo.set_cd, 'X') || oa.svc_stat_cd
+                             END), 9) IN ('BD', 'DD') THEN 'N'
+           WHEN SUBSTRING(MAX(CASE
+                               WHEN ofo.mag_cd = 'SHM' THEN NVL(TO_CHAR(ofo.ord_dt, 'YYYYMMDD'), '00000000') || ofo.set_cd
+                             END), 9) IN ('B', 'D') THEN 'D'
+         END shm_lst_sub_ord_role_cd
+	FROM
+		prod.account er
+		LEFT JOIN agg.offline_account_tmp4 oa ON er.source_account_id = oa.acct_id
+		LEFT JOIN agg.offline_ord_tmp3 ofo ON oa.acct_id = ofo.acct_id
+		LEFT JOIN agg.ofl_sum_oca_temp oca ON ofo.acct_id = oca.acct_id AND ofo.ord_id = oca.ord_id
+		LEFT JOIN cr_temp.ofl_brks_temp obt ON er.individual_id = obt.individual_id
+		LEFT JOIN etl_proc.lookup_magazine iss ON oa.mag_cd = iss.magazine_code AND oa.expr_iss_num = iss.iss_num
+		LEFT JOIN agg.ofl_de_temp de ON er.individual_id = de.individual_id
+		LEFT JOIN agg.ofl_combine_temp ct ON er.individual_id = ct.individual_id
+		LEFT JOIN agg.ofl_sum_tmp1 de_cnt ON er.individual_id = de_cnt.individual_id
+		LEFT JOIN agg.ofl_sum_tmp2 ofo2 ON er.individual_id = ofo2.individual_id
+	WHERE  
+		(oa.acct_id IS NOT NULL OR de.individual_id IS NOT NULL)
+	GROUP BY
+		  er.individual_id;
+</SQL>
+    <Name>Tab 8</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>select
+  individual_id,
+  min(cns_orig_strt_iss_num) cns_orig_strt_iss_num,
+  min(crh_orig_strt_iss_num) crh_orig_strt_iss_num,
+  min(crm_orig_strt_iss_num) crm_orig_strt_iss_num,
+  min(shm_orig_strt_iss_num) shm_orig_strt_iss_num,
+  max(case when cro_brk_dt_rnk = 1
+           then nvl2(cro_brk_dt, cro_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) last_cro_brk_dt,
+  max(case when cro_brk_dt_rnk = 2
+           then nvl2(cro_brk_dt, cro_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) prior_cro_brk_dt,
+  count(cro_brk_dt) cro_brks_cnt,
+  max(case when hl_brk_dt_rnk = 1
+           then nvl2(hl_brk_dt, hl_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) last_hl_brk_dt,
+  max(case when hl_brk_dt_rnk = 2
+           then nvl2(hl_brk_dt, hl_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) prior_hl_brk_dt,
+  count(hl_brk_dt) hl_brks_cnt,
+  max(case when ma_brk_dt_rnk = 1
+           then nvl2(ma_brk_dt, ma_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) last_ma_brk_dt,
+  max(case when ma_brk_dt_rnk = 2
+           then nvl2(ma_brk_dt, ma_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) prior_ma_brk_dt,
+  count(ma_brk_dt) ma_brks_cnt,
+  max(case when shm_brk_dt_rnk = 1
+           then nvl2(shm_brk_dt, shm_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) last_shm_brk_dt,
+  max(case when shm_brk_dt_rnk = 2
+           then nvl2(shm_brk_dt, shm_brk_dt||'|'||orig_strt_iss_num, null)
+           else null
+      end) prior_shm_brk_dt,
+  count(shm_brk_dt) shm_brks_cnt
+from 
+  (select
+     t2.individual_id,
+     cro_brk_dt,
+     hl_brk_dt, 
+     ma_brk_dt,
+     shm_brk_dt,
+     row_number() over (partition by t2.individual_id
+                        order by cro_brk_dt desc nulls last) cro_brk_dt_rnk,
+     row_number() over (partition by t2.individual_id
+                        order by hl_brk_dt desc nulls last) hl_brk_dt_rnk,
+     row_number() over (partition by t2.individual_id
+                        order by ma_brk_dt desc nulls last) ma_brk_dt_rnk,
+     row_number() over (partition by t2.individual_id
+                        order by shm_brk_dt desc nulls last) shm_brk_dt_rnk,
+    orig_strt_iss_num,
+    cns_orig_strt_iss_num,
+    crh_orig_strt_iss_num,
+    crm_orig_strt_iss_num,
+    shm_orig_strt_iss_num
+   from
+     (select 
+        er.individual_id,
+        case when oa.mag_cd = 'CNS'
+             then case when months_between(strt_lkp.pub_dt,
+                                           nvl(max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                                               ,strt_lkp.pub_dt)) &gt; 6
+                       then max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                       else null
+                  end
+             else null
+        end cro_brk_dt,
+        case when oa.mag_cd = 'CNS'
+             then min(orig_strt_iss_num) over (partition by  er.individual_id, oa.mag_cd) 
+    end cns_orig_strt_iss_num,
+    case when oa.mag_cd = 'CRH'
+             then case when months_between(strt_lkp.pub_dt,
+                                           nvl(max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                                               ,strt_lkp.pub_dt)) &gt; 6
+                       then max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                       else null
+                  end
+             else null
+        end hl_brk_dt,
+        case when oa.mag_cd = 'CRH'
+             then min(orig_strt_iss_num) over (partition by  er.individual_id, oa.mag_cd) 
+    end crh_orig_strt_iss_num,
+    case when oa.mag_cd = 'CRM'
+             then case when months_between(strt_lkp.pub_dt,
+                                           nvl(max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                                               ,strt_lkp.pub_dt)) &gt; 6
+                       then max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                       else null
+                  end
+             else null
+        end ma_brk_dt,
+        case when oa.mag_cd = 'CRM'
+             then min(orig_strt_iss_num) over (partition by  er.individual_id, oa.mag_cd) 
+    end crm_orig_strt_iss_num,
+  case when oa.mag_cd = 'SHM'
+             then case when months_between(strt_lkp.pub_dt,
+                                           nvl(max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                                               ,strt_lkp.pub_dt)) &gt; 6
+                       then max(end_lkp.pub_dt) over (partition by
+                                                              er.individual_id,
+                                                              oa.mag_cd
+                                                            order by strt_lkp.pub_dt
+                                                            rows between unbounded preceding and 1 preceding)
+                       else null
+                  end
+             else null
+        end shm_brk_dt,
+  case when oa.mag_cd = 'SHM'
+             then min(orig_strt_iss_num) over (partition by  er.individual_id, oa.mag_cd) 
+    end shm_orig_strt_iss_num,
+    oo.orig_strt_iss_num         
+from mt_offline_ord oo, 
+     warehouse.offline_account oa,
+     warehouse.external_ref er, 
+     warehouse.issue_lkp strt_lkp,  
+     warehouse.issue_lkp end_lkp  
+where oa.acct_id = oo.acct_id
+  and to_char(er.internal_key) = oa.acct_id
+  and end_lkp.mag_cd = oa.mag_cd
+  and end_lkp.iss_num = (oo.orig_strt_iss_num + oo.term_mth_cnt)
+  and strt_lkp.mag_cd = oa.mag_cd
+  and strt_lkp.iss_num = oo.orig_strt_iss_num
+  and ( set_cd not in('B','D') or stat_cd not in ('D') )
+  and oa.mag_cd in ('CNS', 'CRM', 'CRH', 'SHM'))
+       t2)
+group by individual_id;</SQL>
+    <Name>Tab 9</Name>
+  </Query>
+  <Query IsView="False" IsSP="False">
+    <SQL>select *
+from prod.action_header ah 
+where 1=1 and not exists (select null from prod.account acc where ah.hash_account_id = acc.hash_account_id)
+limit 1000;
+
+select count(*)
+from prod.action_header ah 
+where 1=1 and not exists (select null from prod.account acc where ah.hash_account_id = acc.hash_account_id)
+limit 1000;
+
+select *
+from prod.account acc
+where 1=1 and acc.hash_account_id in ( '17EA021C8079EF155A9A6059A4DE2505'
+,'02DE37B2C32FA7A89F994772F072921E'
+,'256256D3BA364FE9D78B80E5C9FC3DBF'
+,'356C979BADC3CE280801CD9431C13FD4'
+,'62CDA05BCFE2B236A979DCBE295B8D6F'
+,'575F736205BED95C68029BB35835B09E'
+,'59841CF417CEF2BD7C824767FD01A1D5'
+,'47C408E70E4B6A7846247ED871BC2F58'
+,'4A542BBA1CEA4500B3F83C3BBD4B5EC9')
+limit 1000;</SQL>
+    <Name>Tab 10</Name>
+  </Query>
+</QuerySet>

@@ -1,0 +1,448 @@
+;
+create table cr_temp.GTT_MT_OFFLINE_SUMMARY as
+select 1 as icd_fl, null as cdh_fl,ICD_ID, cdh_id
+/*--START--*/														
+/*, INDIVIDUAL_ID*/
+, NVL2(CR_ACTV_FLG, CR_ACTV_FLG::text,'(NULL)') as CR_ACTV_FLG
+, NVL2(HL_ACTV_FLG, HL_ACTV_FLG::text,'(NULL)') as HL_ACTV_FLG
+, NVL2(CR_ACTV_RPTG_FLG, CR_ACTV_RPTG_FLG::text,'(NULL)') as CR_ACTV_RPTG_FLG
+, NVL2(HL_ACTV_RPTG_FLG, HL_ACTV_RPTG_FLG::text,'(NULL)') as HL_ACTV_RPTG_FLG
+, NVL2(CR_ACTV_PD_FLG, CR_ACTV_PD_FLG::text,'(NULL)') as CR_ACTV_PD_FLG
+, NVL2(HL_ACTV_PD_FLG, HL_ACTV_PD_FLG::text,'(NULL)') as HL_ACTV_PD_FLG
+, NVL2(CR_CANC_BAD_DBT_FLG, CR_CANC_BAD_DBT_FLG::text,'(NULL)') as CR_CANC_BAD_DBT_FLG
+, NVL2(HL_CANC_BAD_DBT_FLG, HL_CANC_BAD_DBT_FLG::text,'(NULL)') as HL_CANC_BAD_DBT_FLG
+, NVL2(CR_CANC_CUST_FLG, CR_CANC_CUST_FLG::text,'(NULL)') as CR_CANC_CUST_FLG
+, NVL2(HL_CANC_CUST_FLG, HL_CANC_CUST_FLG::text,'(NULL)') as HL_CANC_CUST_FLG
+, NVL2(CR_CRD_PEND_FLG, CR_CRD_PEND_FLG::text,'(NULL)') as CR_CRD_PEND_FLG
+, NVL2(HL_CRD_PEND_FLG, HL_CRD_PEND_FLG::text,'(NULL)') as HL_CRD_PEND_FLG
+, NVL2(CR_CRD_STAT_CD, CR_CRD_STAT_CD::text,'(NULL)') as CR_CRD_STAT_CD
+, NVL2(HL_CRD_STAT_CD, HL_CRD_STAT_CD::text,'(NULL)') as HL_CRD_STAT_CD
+, NVL2(OFO_CRD_STAT_CD, OFO_CRD_STAT_CD::text,'(NULL)') as OFO_CRD_STAT_CD
+, NVL2(TO_CHAR(CR_EXP_DT,'DD-MON-YY'), TO_CHAR(CR_EXP_DT,'DD-MON-YY')::text,'(NULL)') as CR_EXP_DT
+, NVL2(TO_CHAR(HL_EXP_DT,'DD-MON-YY'), TO_CHAR(HL_EXP_DT,'DD-MON-YY')::text,'(NULL)') as HL_EXP_DT
+, NVL2(TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_CANC_DT
+, NVL2(TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_CANC_DT
+, NVL2(TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as TL_LST_ORD_DT
+, NVL2(TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_PMT_DT
+, NVL2(TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_PMT_DT
+-- , NVL2(CR_FLG, CR_FLG::text,'(NULL)') as CR_FLG
+-- , NVL2(HL_FLG, HL_FLG::text,'(NULL)') as HL_FLG
+-- , NVL2(CR_EXP_FLG, CR_EXP_FLG::text,'(NULL)') as CR_EXP_FLG
+-- , NVL2(HL_EXP_FLG, HL_EXP_FLG::text,'(NULL)') as HL_EXP_FLG
+-- , NVL2(CR_CURR_MBR_KEYCODE, CR_CURR_MBR_KEYCODE::text,'(NULL)') as CR_CURR_MBR_KEYCODE
+-- , NVL2(HL_CURR_MBR_KEYCODE, HL_CURR_MBR_KEYCODE::text,'(NULL)') as HL_CURR_MBR_KEYCODE
+-- , NVL2(CR_CURR_ORD_KEYCODE, CR_CURR_ORD_KEYCODE::text,'(NULL)') as CR_CURR_ORD_KEYCODE
+-- , NVL2(HL_CURR_ORD_KEYCODE, HL_CURR_ORD_KEYCODE::text,'(NULL)') as HL_CURR_ORD_KEYCODE
+-- , NVL2(CR_FST_MBR_KEYCODE, CR_FST_MBR_KEYCODE::text,'(NULL)') as CR_FST_MBR_KEYCODE
+-- , NVL2(HL_FST_MBR_KEYCODE, HL_FST_MBR_KEYCODE::text,'(NULL)') as HL_FST_MBR_KEYCODE
+-- , NVL2(CR_LST_ORD_KEYCODE, CR_LST_ORD_KEYCODE::text,'(NULL)') as CR_LST_ORD_KEYCODE
+-- , NVL2(HL_LST_ORD_KEYCODE, HL_LST_ORD_KEYCODE::text,'(NULL)') as HL_LST_ORD_KEYCODE
+-- , NVL2(CR_LT_SUB_FLG, CR_LT_SUB_FLG::text,'(NULL)') as CR_LT_SUB_FLG
+-- , NVL2(HL_LT_SUB_FLG, HL_LT_SUB_FLG::text,'(NULL)') as HL_LT_SUB_FLG
+-- , NVL2(CR_NON_SUB_DNR_FLG, CR_NON_SUB_DNR_FLG::text,'(NULL)') as CR_NON_SUB_DNR_FLG
+-- , NVL2(HL_NON_SUB_DNR_FLG, HL_NON_SUB_DNR_FLG::text,'(NULL)') as HL_NON_SUB_DNR_FLG
+-- , NVL2(trunc(nvl(CR_BRKS_CNT,'0')), trunc(nvl(CR_BRKS_CNT,'0'))::text,'(NULL)') as CR_BRKS_CNT
+-- , NVL2(trunc(nvl(HL_BRKS_CNT,'0')), trunc(nvl(HL_BRKS_CNT,'0'))::text,'(NULL)') as HL_BRKS_CNT
+-- , NVL2(trunc(nvl(CR_RNW_CNT,'0')), trunc(nvl(CR_RNW_CNT,'0'))::text,'(NULL)') as CR_RNW_CNT
+-- , NVL2(trunc(nvl(HL_RNW_CNT,'0')), trunc(nvl(HL_RNW_CNT,'0'))::text,'(NULL)') as HL_RNW_CNT
+-- , NVL2(CR_REC_FLG, CR_REC_FLG::text,'(NULL)') as CR_REC_FLG
+-- , NVL2(HL_REC_FLG, HL_REC_FLG::text,'(NULL)') as HL_REC_FLG
+-- , NVL2(CR_SVC_STAT_CD, CR_SVC_STAT_CD::text,'(NULL)') as CR_SVC_STAT_CD
+-- , NVL2(HL_SVC_STAT_CD, HL_SVC_STAT_CD::text,'(NULL)') as HL_SVC_STAT_CD
+-- , NVL2(CR_CURR_MBR_SRC_CD, CR_CURR_MBR_SRC_CD::text,'(NULL)') as CR_CURR_MBR_SRC_CD
+-- , NVL2(HL_CURR_MBR_SRC_CD, HL_CURR_MBR_SRC_CD::text,'(NULL)') as HL_CURR_MBR_SRC_CD
+-- , NVL2(CR_CURR_ORD_SRC_CD, CR_CURR_ORD_SRC_CD::text,'(NULL)') as CR_CURR_ORD_SRC_CD
+-- , NVL2(HL_CURR_ORD_SRC_CD, HL_CURR_ORD_SRC_CD::text,'(NULL)') as HL_CURR_ORD_SRC_CD
+-- , NVL2(CR_FST_ORD_SRC_CD, CR_FST_ORD_SRC_CD::text,'(NULL)') as CR_FST_ORD_SRC_CD
+-- , NVL2(HL_FST_ORD_SRC_CD, HL_FST_ORD_SRC_CD::text,'(NULL)') as HL_FST_ORD_SRC_CD
+-- , NVL2(CR_LST_ORD_SRC_CD, CR_LST_ORD_SRC_CD::text,'(NULL)') as CR_LST_ORD_SRC_CD
+-- , NVL2(HL_LST_ORD_SRC_CD, HL_LST_ORD_SRC_CD::text,'(NULL)') as HL_LST_ORD_SRC_CD
+-- , NVL2(CR_PRIOR_MBR_SRC_CD, CR_PRIOR_MBR_SRC_CD::text,'(NULL)') as CR_PRIOR_MBR_SRC_CD
+-- , NVL2(HL_PRIOR_MBR_SRC_CD, HL_PRIOR_MBR_SRC_CD::text,'(NULL)') as HL_PRIOR_MBR_SRC_CD
+-- , NVL2(CR_SUB_DNR_FLG, CR_SUB_DNR_FLG::text,'(NULL)') as CR_SUB_DNR_FLG
+-- , NVL2(HL_SUB_DNR_FLG, HL_SUB_DNR_FLG::text,'(NULL)') as HL_SUB_DNR_FLG
+-- , NVL2(CR_CURR_ORD_TERM, CR_CURR_ORD_TERM::text,'(NULL)') as CR_CURR_ORD_TERM
+-- , NVL2(HL_CURR_ORD_TERM, HL_CURR_ORD_TERM::text,'(NULL)') as HL_CURR_ORD_TERM
+-- , NVL2(TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)') as CR_FST_DNR_DT
+-- , NVL2(TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)') as HL_FST_DNR_DT
+-- , NVL2(EDS_LST_SRC_CD, EDS_LST_SRC_CD::text,'(NULL)') as EDS_LST_SRC_CD
+-- , NVL2(MORBANK_MTCH_CD, MORBANK_MTCH_CD::text,'(NULL)') as MORBANK_MTCH_CD
+-- , NVL2(CR_AUTO_RNW_FLG, CR_AUTO_RNW_FLG::text,'(NULL)') as CR_AUTO_RNW_FLG
+-- , NVL2(HL_AUTO_RNW_FLG, HL_AUTO_RNW_FLG::text,'(NULL)') as HL_AUTO_RNW_FLG
+-- , NVL2(CR_NON_DNR_FLG, CR_NON_DNR_FLG::text,'(NULL)') as CR_NON_DNR_FLG
+-- , NVL2(HL_NON_DNR_FLG, HL_NON_DNR_FLG::text,'(NULL)') as HL_NON_DNR_FLG
+-- , NVL2(TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)') as CR_CURR_MBR_DT
+-- , NVL2(TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)') as HL_CURR_MBR_DT
+-- , NVL2(trunc(nvl(CR_LTD_PD_AMT,'0')), trunc(nvl(CR_LTD_PD_AMT,'0'))::text,'(NULL)') as CR_LTD_PD_AMT
+-- , NVL2(trunc(nvl(HL_LTD_PD_AMT,'0')), trunc(nvl(HL_LTD_PD_AMT,'0'))::text,'(NULL)') as HL_LTD_PD_AMT
+-- , NVL2(TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_CURR_ORD_DT
+-- , NVL2(TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_CURR_ORD_DT
+-- , NVL2(TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_FST_ORD_DT
+-- , NVL2(TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_FST_ORD_DT
+-- , NVL2(TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_CANC_BAD_DBT_DT
+-- , NVL2(TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_CANC_BAD_DBT_DT
+-- , NVL2(TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_DNR_ORD_DT
+-- , NVL2(TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_DNR_ORD_DT
+-- , NVL2(TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_ORD_DT
+-- , NVL2(TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_ORD_DT
+-- , NVL2(trunc(nvl(CR_CANC_BAD_DBT_CNT,'0')), trunc(nvl(CR_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)') as CR_CANC_BAD_DBT_CNT
+-- , NVL2(trunc(nvl(HL_CANC_BAD_DBT_CNT,'0')), trunc(nvl(HL_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)') as HL_CANC_BAD_DBT_CNT
+-- , NVL2(trunc(nvl(CR_CANC_CUST_CNT,'0')), trunc(nvl(CR_CANC_CUST_CNT,'0'))::text,'(NULL)') as CR_CANC_CUST_CNT
+-- , NVL2(trunc(nvl(HL_CANC_CUST_CNT,'0')), trunc(nvl(HL_CANC_CUST_CNT,'0'))::text,'(NULL)') as HL_CANC_CUST_CNT
+-- , NVL2(trunc(nvl(CR_DM_ORD_CNT,'0')), trunc(nvl(CR_DM_ORD_CNT,'0'))::text,'(NULL)') as CR_DM_ORD_CNT
+-- , NVL2(trunc(nvl(HL_DM_ORD_CNT,'0')), trunc(nvl(HL_DM_ORD_CNT,'0'))::text,'(NULL)') as HL_DM_ORD_CNT
+-- , NVL2(trunc(nvl(CR_EM_ORD_CNT,'0')), trunc(nvl(CR_EM_ORD_CNT,'0'))::text,'(NULL)') as CR_EM_ORD_CNT
+-- , NVL2(trunc(nvl(HL_EM_ORD_CNT,'0')), trunc(nvl(HL_EM_ORD_CNT,'0'))::text,'(NULL)') as HL_EM_ORD_CNT
+-- , NVL2(trunc(nvl(CR_DNR_ORD_CNT,'0')), trunc(nvl(CR_DNR_ORD_CNT,'0'))::text,'(NULL)') as CR_DNR_ORD_CNT
+-- , NVL2(trunc(nvl(HL_DNR_ORD_CNT,'0')), trunc(nvl(HL_DNR_ORD_CNT,'0'))::text,'(NULL)') as HL_DNR_ORD_CNT
+-- , NVL2(trunc(nvl(CR_ORD_CNT,'0')), trunc(nvl(CR_ORD_CNT,'0'))::text,'(NULL)') as CR_ORD_CNT
+-- , NVL2(trunc(nvl(HL_ORD_CNT,'0')), trunc(nvl(HL_ORD_CNT,'0'))::text,'(NULL)') as HL_ORD_CNT
+-- , NVL2(trunc(nvl(CR_WR_OFF_CNT,'0')), trunc(nvl(CR_WR_OFF_CNT,'0'))::text,'(NULL)') as CR_WR_OFF_CNT
+-- , NVL2(trunc(nvl(HL_WR_OFF_CNT,'0')), trunc(nvl(HL_WR_OFF_CNT,'0'))::text,'(NULL)') as HL_WR_OFF_CNT
+-- , NVL2(CR_LST_SUB_ORD_ROLE_CD, CR_LST_SUB_ORD_ROLE_CD::text,'(NULL)') as CR_LST_SUB_ORD_ROLE_CD
+-- , NVL2(HL_LST_SUB_ORD_ROLE_CD, HL_LST_SUB_ORD_ROLE_CD::text,'(NULL)') as HL_LST_SUB_ORD_ROLE_CD
+/*---END---*/
+,md5(
+ICD_ID||cdh_id
+/*--START--*/														
+/*||INDIVIDUAL_ID*/
+||NVL2(CR_ACTV_FLG, CR_ACTV_FLG::text,'(NULL)')
+||NVL2(HL_ACTV_FLG, HL_ACTV_FLG::text,'(NULL)')
+||NVL2(CR_ACTV_RPTG_FLG, CR_ACTV_RPTG_FLG::text,'(NULL)')
+||NVL2(HL_ACTV_RPTG_FLG, HL_ACTV_RPTG_FLG::text,'(NULL)')
+||NVL2(CR_ACTV_PD_FLG, CR_ACTV_PD_FLG::text,'(NULL)')
+||NVL2(HL_ACTV_PD_FLG, HL_ACTV_PD_FLG::text,'(NULL)')
+||NVL2(CR_CANC_BAD_DBT_FLG, CR_CANC_BAD_DBT_FLG::text,'(NULL)')
+||NVL2(HL_CANC_BAD_DBT_FLG, HL_CANC_BAD_DBT_FLG::text,'(NULL)')
+||NVL2(CR_CANC_CUST_FLG, CR_CANC_CUST_FLG::text,'(NULL)')
+||NVL2(HL_CANC_CUST_FLG, HL_CANC_CUST_FLG::text,'(NULL)')
+||NVL2(CR_CRD_PEND_FLG, CR_CRD_PEND_FLG::text,'(NULL)')
+||NVL2(HL_CRD_PEND_FLG, HL_CRD_PEND_FLG::text,'(NULL)')
+||NVL2(CR_CRD_STAT_CD, CR_CRD_STAT_CD::text,'(NULL)')
+||NVL2(HL_CRD_STAT_CD, HL_CRD_STAT_CD::text,'(NULL)')
+||NVL2(OFO_CRD_STAT_CD, OFO_CRD_STAT_CD::text,'(NULL)')
+||NVL2(TO_CHAR(CR_EXP_DT,'DD-MON-YY'), TO_CHAR(CR_EXP_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(HL_EXP_DT,'DD-MON-YY'), TO_CHAR(HL_EXP_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(CR_FLG, CR_FLG::text,'(NULL)')
+-- ||NVL2(HL_FLG, HL_FLG::text,'(NULL)')
+-- ||NVL2(CR_EXP_FLG, CR_EXP_FLG::text,'(NULL)')
+-- ||NVL2(HL_EXP_FLG, HL_EXP_FLG::text,'(NULL)')
+-- ||NVL2(CR_CURR_MBR_KEYCODE, CR_CURR_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_CURR_MBR_KEYCODE, HL_CURR_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_CURR_ORD_KEYCODE, CR_CURR_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_CURR_ORD_KEYCODE, HL_CURR_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_FST_MBR_KEYCODE, CR_FST_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_FST_MBR_KEYCODE, HL_FST_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_LST_ORD_KEYCODE, CR_LST_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_LST_ORD_KEYCODE, HL_LST_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_LT_SUB_FLG, CR_LT_SUB_FLG::text,'(NULL)')
+-- ||NVL2(HL_LT_SUB_FLG, HL_LT_SUB_FLG::text,'(NULL)')
+-- ||NVL2(CR_NON_SUB_DNR_FLG, CR_NON_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(HL_NON_SUB_DNR_FLG, HL_NON_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_BRKS_CNT,'0')), trunc(nvl(CR_BRKS_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_BRKS_CNT,'0')), trunc(nvl(HL_BRKS_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_RNW_CNT,'0')), trunc(nvl(CR_RNW_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_RNW_CNT,'0')), trunc(nvl(HL_RNW_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(CR_REC_FLG, CR_REC_FLG::text,'(NULL)')
+-- ||NVL2(HL_REC_FLG, HL_REC_FLG::text,'(NULL)')
+-- ||NVL2(CR_SVC_STAT_CD, CR_SVC_STAT_CD::text,'(NULL)')
+-- ||NVL2(HL_SVC_STAT_CD, HL_SVC_STAT_CD::text,'(NULL)')
+-- ||NVL2(CR_CURR_MBR_SRC_CD, CR_CURR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_CURR_MBR_SRC_CD, HL_CURR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_CURR_ORD_SRC_CD, CR_CURR_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_CURR_ORD_SRC_CD, HL_CURR_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_FST_ORD_SRC_CD, CR_FST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_FST_ORD_SRC_CD, HL_FST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_LST_ORD_SRC_CD, CR_LST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_LST_ORD_SRC_CD, HL_LST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_PRIOR_MBR_SRC_CD, CR_PRIOR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_PRIOR_MBR_SRC_CD, HL_PRIOR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_SUB_DNR_FLG, CR_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(HL_SUB_DNR_FLG, HL_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(CR_CURR_ORD_TERM, CR_CURR_ORD_TERM::text,'(NULL)')
+-- ||NVL2(HL_CURR_ORD_TERM, HL_CURR_ORD_TERM::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(EDS_LST_SRC_CD, EDS_LST_SRC_CD::text,'(NULL)')
+-- ||NVL2(MORBANK_MTCH_CD, MORBANK_MTCH_CD::text,'(NULL)')
+-- ||NVL2(CR_AUTO_RNW_FLG, CR_AUTO_RNW_FLG::text,'(NULL)')
+-- ||NVL2(HL_AUTO_RNW_FLG, HL_AUTO_RNW_FLG::text,'(NULL)')
+-- ||NVL2(CR_NON_DNR_FLG, CR_NON_DNR_FLG::text,'(NULL)')
+-- ||NVL2(HL_NON_DNR_FLG, HL_NON_DNR_FLG::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_LTD_PD_AMT,'0')), trunc(nvl(CR_LTD_PD_AMT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_LTD_PD_AMT,'0')), trunc(nvl(HL_LTD_PD_AMT,'0'))::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_CANC_BAD_DBT_CNT,'0')), trunc(nvl(CR_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_CANC_BAD_DBT_CNT,'0')), trunc(nvl(HL_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_CANC_CUST_CNT,'0')), trunc(nvl(CR_CANC_CUST_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_CANC_CUST_CNT,'0')), trunc(nvl(HL_CANC_CUST_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_DM_ORD_CNT,'0')), trunc(nvl(CR_DM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_DM_ORD_CNT,'0')), trunc(nvl(HL_DM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_EM_ORD_CNT,'0')), trunc(nvl(CR_EM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_EM_ORD_CNT,'0')), trunc(nvl(HL_EM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_DNR_ORD_CNT,'0')), trunc(nvl(CR_DNR_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_DNR_ORD_CNT,'0')), trunc(nvl(HL_DNR_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_ORD_CNT,'0')), trunc(nvl(CR_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_ORD_CNT,'0')), trunc(nvl(HL_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_WR_OFF_CNT,'0')), trunc(nvl(CR_WR_OFF_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_WR_OFF_CNT,'0')), trunc(nvl(HL_WR_OFF_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(CR_LST_SUB_ORD_ROLE_CD, CR_LST_SUB_ORD_ROLE_CD::text,'(NULL)')
+-- ||NVL2(HL_LST_SUB_ORD_ROLE_CD, HL_LST_SUB_ORD_ROLE_CD::text,'(NULL)')
+/*---END---*/
+) as hash_value
+from cr_temp.MT_OFFLINE_SUMMARY T_MAIN  inner join crprod_cdh.cr_temp.id_xref_ncbi_excl_mt_off_ord on INDIVIDUAL_ID = ICD_ID ;
+CREATE TABLE cr_temp.gtt_agg_print_summary AS
+select null as icd_fl, 1 as cdh_fl,ICD_ID, cdh_id
+/*--START--*/														
+/*, INDIVIDUAL_ID*/
+, NVL2(CR_ACTV_FLG, CR_ACTV_FLG::text,'(NULL)') as CR_ACTV_FLG
+, NVL2(HL_ACTV_FLG, HL_ACTV_FLG::text,'(NULL)') as HL_ACTV_FLG
+, NVL2(CR_ACTV_RPTG_FLG, CR_ACTV_RPTG_FLG::text,'(NULL)') as CR_ACTV_RPTG_FLG
+, NVL2(HL_ACTV_RPTG_FLG, HL_ACTV_RPTG_FLG::text,'(NULL)') as HL_ACTV_RPTG_FLG
+, NVL2(CR_ACTV_PD_FLG, CR_ACTV_PD_FLG::text,'(NULL)') as CR_ACTV_PD_FLG
+, NVL2(HL_ACTV_PD_FLG, HL_ACTV_PD_FLG::text,'(NULL)') as HL_ACTV_PD_FLG
+, NVL2(CR_CANC_BAD_DBT_FLG, CR_CANC_BAD_DBT_FLG::text,'(NULL)') as CR_CANC_BAD_DBT_FLG
+, NVL2(HL_CANC_BAD_DBT_FLG, HL_CANC_BAD_DBT_FLG::text,'(NULL)') as HL_CANC_BAD_DBT_FLG
+, NVL2(CR_CANC_CUST_FLG, CR_CANC_CUST_FLG::text,'(NULL)') as CR_CANC_CUST_FLG
+, NVL2(HL_CANC_CUST_FLG, HL_CANC_CUST_FLG::text,'(NULL)') as HL_CANC_CUST_FLG
+, NVL2(CR_CRD_PEND_FLG, CR_CRD_PEND_FLG::text,'(NULL)') as CR_CRD_PEND_FLG
+, NVL2(HL_CRD_PEND_FLG, HL_CRD_PEND_FLG::text,'(NULL)') as HL_CRD_PEND_FLG
+, NVL2(CR_CRD_STAT_CD, CR_CRD_STAT_CD::text,'(NULL)') as CR_CRD_STAT_CD
+, NVL2(HL_CRD_STAT_CD, HL_CRD_STAT_CD::text,'(NULL)') as HL_CRD_STAT_CD
+, NVL2(OFO_CRD_STAT_CD, OFO_CRD_STAT_CD::text,'(NULL)') as OFO_CRD_STAT_CD
+, NVL2(TO_CHAR(CR_EXP_DT,'DD-MON-YY'), TO_CHAR(CR_EXP_DT,'DD-MON-YY')::text,'(NULL)') as CR_EXP_DT
+, NVL2(TO_CHAR(HL_EXP_DT,'DD-MON-YY'), TO_CHAR(HL_EXP_DT,'DD-MON-YY')::text,'(NULL)') as HL_EXP_DT
+, NVL2(TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_CANC_DT
+, NVL2(TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_CANC_DT
+, NVL2(TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as TL_LST_ORD_DT
+, NVL2(TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_PMT_DT
+, NVL2(TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_PMT_DT
+-- , NVL2(CR_FLG, CR_FLG::text,'(NULL)') as CR_FLG
+-- , NVL2(HL_FLG, HL_FLG::text,'(NULL)') as HL_FLG
+-- , NVL2(CR_EXP_FLG, CR_EXP_FLG::text,'(NULL)') as CR_EXP_FLG
+-- , NVL2(HL_EXP_FLG, HL_EXP_FLG::text,'(NULL)') as HL_EXP_FLG
+-- , NVL2(CR_CURR_MBR_KEYCODE, CR_CURR_MBR_KEYCODE::text,'(NULL)') as CR_CURR_MBR_KEYCODE
+-- , NVL2(HL_CURR_MBR_KEYCODE, HL_CURR_MBR_KEYCODE::text,'(NULL)') as HL_CURR_MBR_KEYCODE
+-- , NVL2(CR_CURR_ORD_KEYCODE, CR_CURR_ORD_KEYCODE::text,'(NULL)') as CR_CURR_ORD_KEYCODE
+-- , NVL2(HL_CURR_ORD_KEYCODE, HL_CURR_ORD_KEYCODE::text,'(NULL)') as HL_CURR_ORD_KEYCODE
+-- , NVL2(CR_FST_MBR_KEYCODE, CR_FST_MBR_KEYCODE::text,'(NULL)') as CR_FST_MBR_KEYCODE
+-- , NVL2(HL_FST_MBR_KEYCODE, HL_FST_MBR_KEYCODE::text,'(NULL)') as HL_FST_MBR_KEYCODE
+-- , NVL2(CR_LST_ORD_KEYCODE, CR_LST_ORD_KEYCODE::text,'(NULL)') as CR_LST_ORD_KEYCODE
+-- , NVL2(HL_LST_ORD_KEYCODE, HL_LST_ORD_KEYCODE::text,'(NULL)') as HL_LST_ORD_KEYCODE
+-- , NVL2(CR_LT_SUB_FLG, CR_LT_SUB_FLG::text,'(NULL)') as CR_LT_SUB_FLG
+-- , NVL2(HL_LT_SUB_FLG, HL_LT_SUB_FLG::text,'(NULL)') as HL_LT_SUB_FLG
+-- , NVL2(CR_NON_SUB_DNR_FLG, CR_NON_SUB_DNR_FLG::text,'(NULL)') as CR_NON_SUB_DNR_FLG
+-- , NVL2(HL_NON_SUB_DNR_FLG, HL_NON_SUB_DNR_FLG::text,'(NULL)') as HL_NON_SUB_DNR_FLG
+-- , NVL2(trunc(nvl(CR_BRKS_CNT,'0')), trunc(nvl(CR_BRKS_CNT,'0'))::text,'(NULL)') as CR_BRKS_CNT
+-- , NVL2(trunc(nvl(HL_BRKS_CNT,'0')), trunc(nvl(HL_BRKS_CNT,'0'))::text,'(NULL)') as HL_BRKS_CNT
+-- , NVL2(trunc(nvl(CR_RNW_CNT,'0')), trunc(nvl(CR_RNW_CNT,'0'))::text,'(NULL)') as CR_RNW_CNT
+-- , NVL2(trunc(nvl(HL_RNW_CNT,'0')), trunc(nvl(HL_RNW_CNT,'0'))::text,'(NULL)') as HL_RNW_CNT
+-- , NVL2(CR_REC_FLG, CR_REC_FLG::text,'(NULL)') as CR_REC_FLG
+-- , NVL2(HL_REC_FLG, HL_REC_FLG::text,'(NULL)') as HL_REC_FLG
+-- , NVL2(CR_SVC_STAT_CD, CR_SVC_STAT_CD::text,'(NULL)') as CR_SVC_STAT_CD
+-- , NVL2(HL_SVC_STAT_CD, HL_SVC_STAT_CD::text,'(NULL)') as HL_SVC_STAT_CD
+-- , NVL2(CR_CURR_MBR_SRC_CD, CR_CURR_MBR_SRC_CD::text,'(NULL)') as CR_CURR_MBR_SRC_CD
+-- , NVL2(HL_CURR_MBR_SRC_CD, HL_CURR_MBR_SRC_CD::text,'(NULL)') as HL_CURR_MBR_SRC_CD
+-- , NVL2(CR_CURR_ORD_SRC_CD, CR_CURR_ORD_SRC_CD::text,'(NULL)') as CR_CURR_ORD_SRC_CD
+-- , NVL2(HL_CURR_ORD_SRC_CD, HL_CURR_ORD_SRC_CD::text,'(NULL)') as HL_CURR_ORD_SRC_CD
+-- , NVL2(CR_FST_ORD_SRC_CD, CR_FST_ORD_SRC_CD::text,'(NULL)') as CR_FST_ORD_SRC_CD
+-- , NVL2(HL_FST_ORD_SRC_CD, HL_FST_ORD_SRC_CD::text,'(NULL)') as HL_FST_ORD_SRC_CD
+-- , NVL2(CR_LST_ORD_SRC_CD, CR_LST_ORD_SRC_CD::text,'(NULL)') as CR_LST_ORD_SRC_CD
+-- , NVL2(HL_LST_ORD_SRC_CD, HL_LST_ORD_SRC_CD::text,'(NULL)') as HL_LST_ORD_SRC_CD
+-- , NVL2(CR_PRIOR_MBR_SRC_CD, CR_PRIOR_MBR_SRC_CD::text,'(NULL)') as CR_PRIOR_MBR_SRC_CD
+-- , NVL2(HL_PRIOR_MBR_SRC_CD, HL_PRIOR_MBR_SRC_CD::text,'(NULL)') as HL_PRIOR_MBR_SRC_CD
+-- , NVL2(CR_SUB_DNR_FLG, CR_SUB_DNR_FLG::text,'(NULL)') as CR_SUB_DNR_FLG
+-- , NVL2(HL_SUB_DNR_FLG, HL_SUB_DNR_FLG::text,'(NULL)') as HL_SUB_DNR_FLG
+-- , NVL2(CR_CURR_ORD_TERM, CR_CURR_ORD_TERM::text,'(NULL)') as CR_CURR_ORD_TERM
+-- , NVL2(HL_CURR_ORD_TERM, HL_CURR_ORD_TERM::text,'(NULL)') as HL_CURR_ORD_TERM
+-- , NVL2(TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)') as CR_FST_DNR_DT
+-- , NVL2(TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)') as HL_FST_DNR_DT
+-- , NVL2(EDS_LST_SRC_CD, EDS_LST_SRC_CD::text,'(NULL)') as EDS_LST_SRC_CD
+-- , NVL2(MORBANK_MTCH_CD, MORBANK_MTCH_CD::text,'(NULL)') as MORBANK_MTCH_CD
+-- , NVL2(CR_AUTO_RNW_FLG, CR_AUTO_RNW_FLG::text,'(NULL)') as CR_AUTO_RNW_FLG
+-- , NVL2(HL_AUTO_RNW_FLG, HL_AUTO_RNW_FLG::text,'(NULL)') as HL_AUTO_RNW_FLG
+-- , NVL2(CR_NON_DNR_FLG, CR_NON_DNR_FLG::text,'(NULL)') as CR_NON_DNR_FLG
+-- , NVL2(HL_NON_DNR_FLG, HL_NON_DNR_FLG::text,'(NULL)') as HL_NON_DNR_FLG
+-- , NVL2(TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)') as CR_CURR_MBR_DT
+-- , NVL2(TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)') as HL_CURR_MBR_DT
+-- , NVL2(trunc(nvl(CR_LTD_PD_AMT,'0')), trunc(nvl(CR_LTD_PD_AMT,'0'))::text,'(NULL)') as CR_LTD_PD_AMT
+-- , NVL2(trunc(nvl(HL_LTD_PD_AMT,'0')), trunc(nvl(HL_LTD_PD_AMT,'0'))::text,'(NULL)') as HL_LTD_PD_AMT
+-- , NVL2(TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_CURR_ORD_DT
+-- , NVL2(TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_CURR_ORD_DT
+-- , NVL2(TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_FST_ORD_DT
+-- , NVL2(TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_FST_ORD_DT
+-- , NVL2(TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_CANC_BAD_DBT_DT
+-- , NVL2(TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_CANC_BAD_DBT_DT
+-- , NVL2(TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_DNR_ORD_DT
+-- , NVL2(TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_DNR_ORD_DT
+-- , NVL2(TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as CR_LST_ORD_DT
+-- , NVL2(TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)') as HL_LST_ORD_DT
+-- , NVL2(trunc(nvl(CR_CANC_BAD_DBT_CNT,'0')), trunc(nvl(CR_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)') as CR_CANC_BAD_DBT_CNT
+-- , NVL2(trunc(nvl(HL_CANC_BAD_DBT_CNT,'0')), trunc(nvl(HL_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)') as HL_CANC_BAD_DBT_CNT
+-- , NVL2(trunc(nvl(CR_CANC_CUST_CNT,'0')), trunc(nvl(CR_CANC_CUST_CNT,'0'))::text,'(NULL)') as CR_CANC_CUST_CNT
+-- , NVL2(trunc(nvl(HL_CANC_CUST_CNT,'0')), trunc(nvl(HL_CANC_CUST_CNT,'0'))::text,'(NULL)') as HL_CANC_CUST_CNT
+-- , NVL2(trunc(nvl(CR_DM_ORD_CNT,'0')), trunc(nvl(CR_DM_ORD_CNT,'0'))::text,'(NULL)') as CR_DM_ORD_CNT
+-- , NVL2(trunc(nvl(HL_DM_ORD_CNT,'0')), trunc(nvl(HL_DM_ORD_CNT,'0'))::text,'(NULL)') as HL_DM_ORD_CNT
+-- , NVL2(trunc(nvl(CR_EM_ORD_CNT,'0')), trunc(nvl(CR_EM_ORD_CNT,'0'))::text,'(NULL)') as CR_EM_ORD_CNT
+-- , NVL2(trunc(nvl(HL_EM_ORD_CNT,'0')), trunc(nvl(HL_EM_ORD_CNT,'0'))::text,'(NULL)') as HL_EM_ORD_CNT
+-- , NVL2(trunc(nvl(CR_DNR_ORD_CNT,'0')), trunc(nvl(CR_DNR_ORD_CNT,'0'))::text,'(NULL)') as CR_DNR_ORD_CNT
+-- , NVL2(trunc(nvl(HL_DNR_ORD_CNT,'0')), trunc(nvl(HL_DNR_ORD_CNT,'0'))::text,'(NULL)') as HL_DNR_ORD_CNT
+-- , NVL2(trunc(nvl(CR_ORD_CNT,'0')), trunc(nvl(CR_ORD_CNT,'0'))::text,'(NULL)') as CR_ORD_CNT
+-- , NVL2(trunc(nvl(HL_ORD_CNT,'0')), trunc(nvl(HL_ORD_CNT,'0'))::text,'(NULL)') as HL_ORD_CNT
+-- , NVL2(trunc(nvl(CR_WR_OFF_CNT,'0')), trunc(nvl(CR_WR_OFF_CNT,'0'))::text,'(NULL)') as CR_WR_OFF_CNT
+-- , NVL2(trunc(nvl(HL_WR_OFF_CNT,'0')), trunc(nvl(HL_WR_OFF_CNT,'0'))::text,'(NULL)') as HL_WR_OFF_CNT
+-- , NVL2(CR_LST_SUB_ORD_ROLE_CD, CR_LST_SUB_ORD_ROLE_CD::text,'(NULL)') as CR_LST_SUB_ORD_ROLE_CD
+-- , NVL2(HL_LST_SUB_ORD_ROLE_CD, HL_LST_SUB_ORD_ROLE_CD::text,'(NULL)') as HL_LST_SUB_ORD_ROLE_CD
+/*---END---*/
+,md5(
+ICD_ID||cdh_id
+/*--START--*/														
+/*||INDIVIDUAL_ID*/
+||NVL2(CR_ACTV_FLG, CR_ACTV_FLG::text,'(NULL)')
+||NVL2(HL_ACTV_FLG, HL_ACTV_FLG::text,'(NULL)')
+||NVL2(CR_ACTV_RPTG_FLG, CR_ACTV_RPTG_FLG::text,'(NULL)')
+||NVL2(HL_ACTV_RPTG_FLG, HL_ACTV_RPTG_FLG::text,'(NULL)')
+||NVL2(CR_ACTV_PD_FLG, CR_ACTV_PD_FLG::text,'(NULL)')
+||NVL2(HL_ACTV_PD_FLG, HL_ACTV_PD_FLG::text,'(NULL)')
+||NVL2(CR_CANC_BAD_DBT_FLG, CR_CANC_BAD_DBT_FLG::text,'(NULL)')
+||NVL2(HL_CANC_BAD_DBT_FLG, HL_CANC_BAD_DBT_FLG::text,'(NULL)')
+||NVL2(CR_CANC_CUST_FLG, CR_CANC_CUST_FLG::text,'(NULL)')
+||NVL2(HL_CANC_CUST_FLG, HL_CANC_CUST_FLG::text,'(NULL)')
+||NVL2(CR_CRD_PEND_FLG, CR_CRD_PEND_FLG::text,'(NULL)')
+||NVL2(HL_CRD_PEND_FLG, HL_CRD_PEND_FLG::text,'(NULL)')
+||NVL2(CR_CRD_STAT_CD, CR_CRD_STAT_CD::text,'(NULL)')
+||NVL2(HL_CRD_STAT_CD, HL_CRD_STAT_CD::text,'(NULL)')
+||NVL2(OFO_CRD_STAT_CD, OFO_CRD_STAT_CD::text,'(NULL)')
+||NVL2(TO_CHAR(CR_EXP_DT,'DD-MON-YY'), TO_CHAR(CR_EXP_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(HL_EXP_DT,'DD-MON-YY'), TO_CHAR(HL_EXP_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(TL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)')
+||NVL2(TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_PMT_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(CR_FLG, CR_FLG::text,'(NULL)')
+-- ||NVL2(HL_FLG, HL_FLG::text,'(NULL)')
+-- ||NVL2(CR_EXP_FLG, CR_EXP_FLG::text,'(NULL)')
+-- ||NVL2(HL_EXP_FLG, HL_EXP_FLG::text,'(NULL)')
+-- ||NVL2(CR_CURR_MBR_KEYCODE, CR_CURR_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_CURR_MBR_KEYCODE, HL_CURR_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_CURR_ORD_KEYCODE, CR_CURR_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_CURR_ORD_KEYCODE, HL_CURR_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_FST_MBR_KEYCODE, CR_FST_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_FST_MBR_KEYCODE, HL_FST_MBR_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_LST_ORD_KEYCODE, CR_LST_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(HL_LST_ORD_KEYCODE, HL_LST_ORD_KEYCODE::text,'(NULL)')
+-- ||NVL2(CR_LT_SUB_FLG, CR_LT_SUB_FLG::text,'(NULL)')
+-- ||NVL2(HL_LT_SUB_FLG, HL_LT_SUB_FLG::text,'(NULL)')
+-- ||NVL2(CR_NON_SUB_DNR_FLG, CR_NON_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(HL_NON_SUB_DNR_FLG, HL_NON_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_BRKS_CNT,'0')), trunc(nvl(CR_BRKS_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_BRKS_CNT,'0')), trunc(nvl(HL_BRKS_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_RNW_CNT,'0')), trunc(nvl(CR_RNW_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_RNW_CNT,'0')), trunc(nvl(HL_RNW_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(CR_REC_FLG, CR_REC_FLG::text,'(NULL)')
+-- ||NVL2(HL_REC_FLG, HL_REC_FLG::text,'(NULL)')
+-- ||NVL2(CR_SVC_STAT_CD, CR_SVC_STAT_CD::text,'(NULL)')
+-- ||NVL2(HL_SVC_STAT_CD, HL_SVC_STAT_CD::text,'(NULL)')
+-- ||NVL2(CR_CURR_MBR_SRC_CD, CR_CURR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_CURR_MBR_SRC_CD, HL_CURR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_CURR_ORD_SRC_CD, CR_CURR_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_CURR_ORD_SRC_CD, HL_CURR_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_FST_ORD_SRC_CD, CR_FST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_FST_ORD_SRC_CD, HL_FST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_LST_ORD_SRC_CD, CR_LST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_LST_ORD_SRC_CD, HL_LST_ORD_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_PRIOR_MBR_SRC_CD, CR_PRIOR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(HL_PRIOR_MBR_SRC_CD, HL_PRIOR_MBR_SRC_CD::text,'(NULL)')
+-- ||NVL2(CR_SUB_DNR_FLG, CR_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(HL_SUB_DNR_FLG, HL_SUB_DNR_FLG::text,'(NULL)')
+-- ||NVL2(CR_CURR_ORD_TERM, CR_CURR_ORD_TERM::text,'(NULL)')
+-- ||NVL2(HL_CURR_ORD_TERM, HL_CURR_ORD_TERM::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(CR_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY'), TO_CHAR(HL_FST_DNR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(EDS_LST_SRC_CD, EDS_LST_SRC_CD::text,'(NULL)')
+-- ||NVL2(MORBANK_MTCH_CD, MORBANK_MTCH_CD::text,'(NULL)')
+-- ||NVL2(CR_AUTO_RNW_FLG, CR_AUTO_RNW_FLG::text,'(NULL)')
+-- ||NVL2(HL_AUTO_RNW_FLG, HL_AUTO_RNW_FLG::text,'(NULL)')
+-- ||NVL2(CR_NON_DNR_FLG, CR_NON_DNR_FLG::text,'(NULL)')
+-- ||NVL2(HL_NON_DNR_FLG, HL_NON_DNR_FLG::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_MBR_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_LTD_PD_AMT,'0')), trunc(nvl(CR_LTD_PD_AMT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_LTD_PD_AMT,'0')), trunc(nvl(HL_LTD_PD_AMT,'0'))::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_CURR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_FST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(CR_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY'), TO_CHAR(HL_LST_CANC_BAD_DBT_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_DNR_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(CR_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY'), TO_CHAR(HL_LST_ORD_DT,'DD-MON-YY')::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_CANC_BAD_DBT_CNT,'0')), trunc(nvl(CR_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_CANC_BAD_DBT_CNT,'0')), trunc(nvl(HL_CANC_BAD_DBT_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_CANC_CUST_CNT,'0')), trunc(nvl(CR_CANC_CUST_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_CANC_CUST_CNT,'0')), trunc(nvl(HL_CANC_CUST_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_DM_ORD_CNT,'0')), trunc(nvl(CR_DM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_DM_ORD_CNT,'0')), trunc(nvl(HL_DM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_EM_ORD_CNT,'0')), trunc(nvl(CR_EM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_EM_ORD_CNT,'0')), trunc(nvl(HL_EM_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_DNR_ORD_CNT,'0')), trunc(nvl(CR_DNR_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_DNR_ORD_CNT,'0')), trunc(nvl(HL_DNR_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_ORD_CNT,'0')), trunc(nvl(CR_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_ORD_CNT,'0')), trunc(nvl(HL_ORD_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(CR_WR_OFF_CNT,'0')), trunc(nvl(CR_WR_OFF_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(trunc(nvl(HL_WR_OFF_CNT,'0')), trunc(nvl(HL_WR_OFF_CNT,'0'))::text,'(NULL)')
+-- ||NVL2(CR_LST_SUB_ORD_ROLE_CD, CR_LST_SUB_ORD_ROLE_CD::text,'(NULL)')
+-- ||NVL2(HL_LST_SUB_ORD_ROLE_CD, HL_LST_SUB_ORD_ROLE_CD::text,'(NULL)')
+/*---END---*/
+) as hash_value
+from prod.agg_print_summary T_MAIN               inner join crprod_cdh.cr_temp.id_xref_ncbi_excl_mt_off_ord on INDIVIDUAL_ID = CDH_ID ;
+------------------------------------------------------------------------TABLE CREATION END\
+with hash_diff as (
+select  COUNT(ICD_FL) as CNT_ICD_FL, COUNT(CDH_FL) as CNT_CDH_FL, ICD_ID, CDH_ID, HASH_VALUE
+from (
+select  ICD_ID, cdh_id, to_number(ICD_FL,9) as ICD_FL, to_number(CDH_FL,9) as CDH_FL, HASH_VALUE
+from cr_temp.GTT_MT_OFFLINE_SUMMARY
+union all
+select  ICD_ID, cdh_id, to_number(ICD_FL,9) as ICD_FL, to_number(CDH_FL,9) as CDH_FL, HASH_VALUE
+from cr_temp.gtt_agg_print_summary
+)
+group by ICD_ID, CDH_ID, hash_value
+having COUNT(ICD_FL)!=COUNT(CDH_FL)
+order by ICD_ID, CDH_ID, COUNT(ICD_FL) desc, COUNT(CDH_FL) desc
+)
+select top 50 * from hash_diff;
+;
+select count(*) from   cr_temp.GTT_MT_OFFLINE_SUMMARY
+;
+select count(*) from   cr_temp.gtt_agg_print_summary
+------------------------------------------------------------------------RUN ALL ABOVE
+
+;
+select * from   cr_temp.GTT_MT_OFFLINE_SUMMARY  where icd_id = xxxxxxxxxxxxxxxxxxxxxx
+;
+select * from   cr_temp.gtt_agg_print_summary  where cdh_id = xxxxxxxxxxxxxxxxxxxxxx
+
+;
+--truncate table    cr_temp.GTT_MT_OFFLINE_SUMMARY;
+drop table  cr_temp.GTT_MT_OFFLINE_SUMMARY;
+--truncate table cr_temp.gtt_agg_print_summary;
+drop table  cr_temp.gtt_agg_print_summary;														

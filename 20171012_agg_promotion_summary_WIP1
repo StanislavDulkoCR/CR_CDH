@@ -1,0 +1,96 @@
+DROP TABLE IF EXISTS    cr_temp.promsum_fullraw_temp;
+CREATE TABLE            cr_temp.promsum_fullraw_temp
+       DISTSTYLE KEY DISTKEY(individual_id)
+       SORTKEY(individual_id)
+as
+WITH ar AS
+    (SELECT individual_id
+      , MAX(last_response_date) as ar_last_resp_dt
+    FROM prod.legacy_constituent_response
+    WHERE keycode IS NOT NULL
+    GROUP BY individual_id
+    )
+  , ad AS
+    (SELECT individual_id
+        , MAX(abq_yr) as ad_abq_yr 
+    FROM prod.agg_abq_donation 
+    GROUP BY individual_id
+    )
+  , abqr AS
+    (SELECT individual_id
+      , MAX(abq_yr) as abqr_abq_yr
+    FROM prod.agg_abq_response
+    WHERE keycode IS NOT NULL
+        AND mbr_flg = 'Y'
+    GROUP BY individual_id
+    )
+  , fd AS
+    (SELECT individual_id
+      , MAX(don_dt) as fd_don_dt
+    FROM prod.agg_fundraising_donation
+    WHERE keycode IS NOT NULL
+        AND don_amt > 0
+    GROUP BY individual_id
+    )
+  , fp AS
+    (SELECT  /*SD 20171012 Pledges are deprecated*/
+        CAST(NULL AS bigint) AS individual_id
+        , NULL as fp_pldg_dt
+    )
+  , flp AS
+    (SELECT 
+        CAST(NULL AS bigint) AS individual_id
+        , NULL as flp_pldg_dt
+    )
+  , bo as   /*SD 20171012 Pledges are deprecated*/
+    (SELECT individual_id
+      , MAX(ord_dt) as bo_ord_dt
+    FROM prod.agg_books_order
+    WHERE NVL(dnr_recip_cd,'x') != 'R'
+    GROUP BY individual_id
+    ) 
+
+
+select 
+  ix.individual_id
+, ar_last_resp_dt
+, ad_abq_yr 
+, abqr_abq_yr
+, fd_don_dt
+, fp_pldg_dt
+, flp_pldg_dt
+, bo_ord_dt
+from cr_temp.promsum_individual_temp                ix
+    left join                                       ar 
+        on  ix.individual_id = ar.individual_id 
+    left join                                       ad 
+        on ix.individual_id = ad.individual_id 
+    left join                                       abqr 
+        on ix.individual_id = abqr.individual_id 
+    left join                                       fd 
+        on ix.individual_id = fd.individual_id   
+    left join                                       fp 
+        on ix.individual_id = fp.individual_id   
+    left join                                       flp 
+        on ix.individual_id = flp.individual_id  
+    left join                                       bo 
+        on ix.individual_id = bo.individual_id   
+
+
+    left join cr_temp.promsum_oli_summary_temp      oli
+        on ix.individual_id = oli.individual_id
+    left join cr_temp.promsum_ofo_summary_temp      ofo
+        on ix.individual_id = ofo.individual_id
+    left join cr_temp.promsum_exp_summary_temp      de
+        on ix.individual_id = de.individual_id
+    left join prod.agg_individual_xographic         ixo
+        on ix.individual_id = ixo.individual_id
+    left join cr_temp.promsum_promoresp_temp        ph
+        on ix.individual_id = ph.individual_id
+
+
+  /*#TODO RMV*/ where ix.individual_id in (  1200000029 , 1200000039 , 1200000050 , 1200000058 , 1200000059 , 1200000060 , 1200000092 , 1200000100 , 1200000107 , 1200000204 , 1200000206 , 1200000244 , 1200000253 , 1200000265 , 1200000301 , 1200000089 , 1200000178 , 1200000270 , 1200000346 , 1200000405 , 1200000416 , 1200000433 , 1200000489 , 1200000536 , 1200000554 , 1200000602 , 1200000612 , 1200000629 , 1200000636 , 1200000640 , 1200000678 , 1200000002)
+
+
+;
+
