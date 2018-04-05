@@ -1,3 +1,0 @@
-SELECT TOP 100 *
-FROM prod.
-WHERE 1=1
